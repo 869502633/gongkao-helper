@@ -279,6 +279,10 @@
     font-size: 0.9rem;
     line-height: 1.5;
   }
+  .task-type-icon {
+    margin-right: 4px;
+    font-size: 0.85rem;
+  }
   .task-meta {
     display: flex;
     gap: 10px;
@@ -852,6 +856,220 @@
     margin-bottom: 8px;
   }
 
+  /* Course Progress */
+  .course-total-progress {
+    margin-bottom: 14px;
+  }
+  .course-total-progress .total-num {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .course-total-progress .total-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .course-module {
+    margin-bottom: 8px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .course-module:hover {
+    border-color: #cbd5e0;
+  }
+  .course-module.current {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(197, 48, 48, 0.1);
+  }
+
+  .course-module-header {
+    padding: 10px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f7fafc;
+    transition: background 0.2s;
+  }
+  .course-module-header:hover {
+    background: #edf2f7;
+  }
+  .course-module.current .course-module-header {
+    background: var(--accent-light);
+  }
+
+  .course-module-arrow {
+    font-size: 0.7rem;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    width: 14px;
+    text-align: center;
+  }
+  .course-module.expanded .course-module-arrow {
+    transform: rotate(90deg);
+  }
+
+  .course-module-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .course-module-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .course-module-teacher {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: normal;
+  }
+  .course-module.current .course-module-name {
+    color: var(--accent);
+  }
+  .current-badge {
+    font-size: 0.65rem;
+    background: var(--accent);
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  .completed-badge {
+    font-size: 0.65rem;
+    background: var(--success);
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  .course-module-progress {
+    margin-top: 4px;
+  }
+  .course-module-progress .progress-bar {
+    height: 5px;
+    margin: 4px 0;
+  }
+  .course-module-progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .course-module-body {
+    display: none;
+    padding: 8px 12px 12px;
+    background: #fff;
+  }
+  .course-module.expanded .course-module-body {
+    display: block;
+  }
+
+  .course-subgroup {
+    margin-bottom: 10px;
+  }
+  .course-subgroup:last-child {
+    margin-bottom: 0;
+  }
+  .course-subgroup-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 6px;
+    padding: 4px 8px;
+    background: var(--accent2-light);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .course-subgroup-title .subgroup-teacher {
+    font-weight: normal;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .lesson-list {
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .lesson-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.78rem;
+  }
+  .lesson-item:hover {
+    background: #f7fafc;
+  }
+  .lesson-item.current-lesson {
+    background: var(--accent-light);
+    font-weight: 500;
+  }
+  .lesson-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--rule);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: all 0.2s;
+  }
+  .lesson-item.completed .lesson-checkbox {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .lesson-checkbox::after {
+    content: '✓';
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .lesson-item.completed .lesson-checkbox::after {
+    opacity: 1;
+  }
+  .lesson-name {
+    flex: 1;
+    line-height: 1.4;
+  }
+  .lesson-item.completed .lesson-name {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .lesson-index {
+    color: var(--muted);
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .course-empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    padding: 10px 0;
+  }
+
   /* Responsive */
   @media (max-width: 900px) {
     .main {
@@ -901,6 +1119,13 @@
     .form-grid-5 { grid-template-columns: repeat(3, 1fr); }
     .modal { max-height: 90vh; }
     .modal.wide { max-width: 100%; }
+    
+    /* 课程进度手机适配 */
+    .course-total-progress .total-num { font-size: 1.2rem; }
+    .course-module-header { padding: 8px 10px; }
+    .course-module-name { font-size: 0.82rem; }
+    .lesson-list { max-height: 150px; }
+    .lesson-item { font-size: 0.76rem; padding: 4px 6px; }
   }
 </style>
 </head>
@@ -1080,11 +1305,11 @@
       </div>
       <div class="card-body">
         <div class="phase-steps">
-          <div class="phase-step done">
-            <div class="dot">✓</div>
+          <div class="phase-step active">
+            <div class="dot">1</div>
             <div class="step-label">基础期</div>
           </div>
-          <div class="phase-step active">
+          <div class="phase-step">
             <div class="dot">2</div>
             <div class="step-label">强化期</div>
           </div>
@@ -1099,6 +1324,25 @@
         <div class="progress-text">
           <span>基础阶段</span>
           <span id="phasePercent">1/42 天</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Progress -->
+    <div class="card">
+      <div class="card-header">
+        <h2>📚 课程进度</h2>
+      </div>
+      <div class="card-body">
+        <div class="course-total-progress">
+          <div class="total-num" id="courseTotalPercent">0%</div>
+          <div class="total-label" id="courseTotalText">已学 0 / 0 节</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="courseTotalBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div id="courseModuleList">
+          <!-- Course modules will be rendered here -->
         </div>
       </div>
     </div>
@@ -1185,10 +1429,14 @@
       <div class="form-group">
         <label>时段</label>
         <select id="newTaskSection">
-          <option value="morning">晨读时段</option>
-          <option value="evening1">晚间第一时段</option>
-          <option value="evening2">晚间第二时段</option>
-          <option value="review">复盘时段</option>
+          <option value="morning">🌅 晨读时段</option>
+          <option value="noon">☕ 午间碎片</option>
+          <option value="evening1">🌙 晚间第一时段</option>
+          <option value="evening2">🌙 晚间第二时段</option>
+          <option value="weekend_morning">☀️ 周末上午</option>
+          <option value="weekend_afternoon">🌤️ 周末下午</option>
+          <option value="weekend_evening">🌙 周末晚间</option>
+          <option value="review">📋 复盘时段</option>
         </select>
       </div>
     </div>
@@ -1300,45 +1548,25 @@
 // ==================== 数据模型 ====================
 const STORAGE_KEY = 'gongkao_dashboard_data';
 
-// 备考起始日期
-const START_DATE = '2026-08-19';
+// 备考起始日期（Day 1）
+const START_DATE = '2026-08-20';
 
-// 默认任务模板 - 第1天（基础阶段 工作日）
-const defaultTasks = {
-  morning: [
-    { id: 'm1', text: '晨读：申论范文1篇（读+划重点，感受申论文风）', duration: 20, subject: '申论', completed: false },
-    { id: 'm2', text: '成语积累：背诵20组高频易错成语（含词义辨析）', duration: 25, subject: '言语', completed: false },
-    { id: 'm3', text: '时政速览：学习强国App刷10分钟时政新闻', duration: 10, subject: '常识', completed: false },
-    { id: 'm4', text: '图推回顾：5道图形推理题热身，唤醒记忆', duration: 10, subject: '判断', completed: false },
-    { id: 'm5', text: '今日计划梳理：明确全天任务目标', duration: 5, subject: '其他', completed: false },
-  ],
-  evening1: [
-    { id: 'e1_1', text: '看网课：定义判断方法论（约40分钟视频，倍速观看）', duration: 40, subject: '判断', completed: false },
-    { id: 'e1_2', text: '定义判断基础练习：20题（每题限时1分钟）', duration: 25, subject: '判断', completed: false },
-    { id: 'e1_3', text: '对答案+错题分析，整理到错题本', duration: 15, subject: '判断', completed: false },
-    { id: 'e1_4', text: '看网课：类比推理方法论（约30分钟视频）', duration: 30, subject: '判断', completed: false },
-    { id: 'e1_5', text: '类比推理基础练习：15题（每题限时45秒）', duration: 20, subject: '判断', completed: false },
-  ],
-  evening2: [
-    { id: 'e2_1', text: '对答案：类比推理15题错题分析', duration: 10, subject: '判断', completed: false },
-    { id: 'e2_2', text: '申论入门：申论概述+材料阅读方法（看网课/看书）', duration: 40, subject: '申论', completed: false },
-    { id: 'e2_3', text: '申论练习：给1段材料，练习概括段落大意（3段）', duration: 25, subject: '申论', completed: false },
-    { id: 'e2_4', text: '判断推理追加练习：定义判断10题 + 类比推理10题', duration: 20, subject: '判断', completed: false },
-  ],
-  review: [
-    { id: 'r1', text: '统计今日做题正确率和用时', duration: 5, subject: '其他', completed: false },
-    { id: 'r2', text: '错题本整理：所有错题分类记录', duration: 15, subject: '其他', completed: false },
-    { id: 'r3', text: '明天学习计划安排', duration: 5, subject: '其他', completed: false },
-    { id: 'r4', text: 'Anki录入：今日成语+错题考点录入卡片', duration: 5, subject: '其他', completed: false },
-  ]
-};
-
+// 时段名称配置
 const sectionNames = {
   morning: '🌅 晨读时段（06:30-07:30）',
+  noon: '☕ 午间碎片（12:30-13:00）',
   evening1: '🌙 晚间第一时段（19:00-20:30）',
   evening2: '🌙 晚间第二时段（20:45-22:15）',
+  weekend_morning: '☀️ 上午时段（08:30-11:30）',
+  weekend_afternoon: '🌤️ 下午时段（14:00-17:00）',
+  weekend_evening: '🌙 晚间时段（19:00-22:00）',
   review: '📋 复盘时段（22:15-22:45）'
 };
+
+// 工作日时段顺序
+const weekdaySections = ['morning', 'noon', 'evening1', 'evening2', 'review'];
+// 周末时段顺序
+const weekendSections = ['morning', 'weekend_morning', 'weekend_afternoon', 'weekend_evening', 'review'];
 
 const subjectClass = {
   '言语': 'subject-yy',
@@ -1402,21 +1630,61 @@ function isWeekend(offset) {
 
 function ensureDayData(dayKey) {
   if (!data.days[dayKey]) {
+    // 计算当天信息
+    const dayNum = getDayNumber(getOffsetFromKey(dayKey));
+    const isWeekendDay = isWeekend(getOffsetFromKey(dayKey));
+    const sections = isWeekendDay ? weekendSections : weekdaySections;
+    
     // 检查前一天是否有未完成任务需要顺延
     const prevDate = new Date(dayKey);
     prevDate.setDate(prevDate.getDate() - 1);
     const prevKey = prevDate.toISOString().split('T')[0];
     const prevDay = data.days[prevKey];
     
-    let carriedTasks = { morning: [], evening1: [], evening2: [], review: [] };
+    // 初始化顺延任务容器
+    let carriedTasks = {};
+    sections.forEach(s => { carriedTasks[s] = []; });
+    
     if (prevDay) {
-      for (const section of Object.keys(prevDay.tasks)) {
-        prevDay.tasks[section].forEach(task => {
+      // 前一天的时段映射到今天的时段
+      // 工作日 evening1/evening2 -> 工作日 evening1/evening2
+      // 周末 weekend_morning/weekend_afternoon/weekend_evening -> 工作日 evening1/evening2（如果接下来是工作日）
+      // 工作日 evening1/evening2 -> 周末 weekend_morning（如果接下来是周末）
+      
+      for (const prevSection of Object.keys(prevDay.tasks)) {
+        prevDay.tasks[prevSection].forEach(task => {
           if (!task.completed) {
-            carriedTasks[section].push({
+            // 确定顺延到今天的哪个时段
+            let targetSection = prevSection;
+            
+            // 晨读和复盘任务不顺延（每天都有新的）
+            if (prevSection === 'morning' || prevSection === 'review' || prevSection === 'noon') {
+              return;
+            }
+            
+            // 跨周末的时段映射
+            if (isWeekendDay) {
+              // 今天是周末，昨天是工作日
+              if (prevSection === 'evening1' || prevSection === 'evening2') {
+                targetSection = 'weekend_morning';
+              }
+            } else {
+              // 今天是工作日，昨天是周末
+              if (prevSection === 'weekend_morning' || prevSection === 'weekend_afternoon' || prevSection === 'weekend_evening') {
+                targetSection = 'evening1';
+              }
+            }
+            
+            // 确保目标时段存在
+            if (!carriedTasks[targetSection]) {
+              targetSection = sections[1] || sections[0]; // 放到第一个主时段
+            }
+            
+            carriedTasks[targetSection].push({
               ...task,
-              id: task.id + '_c',
+              id: task.id + '_c_' + dayNum,
               carried: true,
+              isCarryOver: true,
               fromDay: prevKey
             });
           }
@@ -1424,13 +1692,14 @@ function ensureDayData(dayKey) {
       }
     }
 
-    // 生成今日任务（基于阶段）
-    const dayNum = getDayNumber(getOffsetFromKey(dayKey));
+    // 生成今日任务（包含晨读、主课程、练习、复盘）
     const dayTasks = generateDayTasks(dayNum);
     
-    // 合并顺延任务
+    // 合并顺延任务（顺延任务放在对应时段最前面）
     for (const section of Object.keys(carriedTasks)) {
-      dayTasks[section] = [...carriedTasks[section], ...dayTasks[section]];
+      if (dayTasks[section]) {
+        dayTasks[section] = [...carriedTasks[section], ...dayTasks[section]];
+      }
     }
 
     data.days[dayKey] = {
@@ -1450,34 +1719,672 @@ function getOffsetFromKey(dayKey) {
   return diff;
 }
 
-// 根据天数生成任务（简化版，实际可以更复杂）
-function generateDayTasks(dayNum) {
-  // 第1天使用默认模板
-  if (dayNum === 1) {
-    return JSON.parse(JSON.stringify(defaultTasks));
+// ==================== 每日任务生成系统 ====================
+
+// 生成晨读时段任务（每天都有）
+function generateMorningTasks(dayNum) {
+  const tasks = [];
+  
+  // 1. 成语/词语积累：15分钟（20个成语）
+  tasks.push({
+    id: `morning_chengyu_${dayNum}`,
+    text: `成语积累：背诵20组高频易错成语（含词义辨析）`,
+    duration: 15,
+    period: 'morning',
+    type: 'reading',
+    subject: '言语',
+    completed: false
+  });
+  
+  // 2. 常识/政治理论网课：1节（15-20分钟）
+  const interleavedLesson = getDailyInterleavedLesson(dayNum);
+  if (interleavedLesson) {
+    tasks.push({
+      id: `morning_interleaved_${dayNum}`,
+      text: `网课：${interleavedLesson.subCourseName}-${interleavedLesson.lessonName}`,
+      duration: 18,
+      period: 'morning',
+      type: 'video',
+      subject: interleavedLesson.subject,
+      completed: false,
+      videoId: interleavedLesson.lessonId,
+      isCourseTask: true,
+      courseLessonId: interleavedLesson.lessonId
+    });
   }
   
-  // 基础阶段（2-42天）根据周次生成
-  const weekNum = Math.ceil(dayNum / 7);
-  const dayInWeek = ((dayNum - 1) % 7) + 1; // 1-7
-  const isWeekendDay = dayInWeek === 6 || dayInWeek === 7;
+  // 3. 申论范文精读：1篇（20分钟）
+  tasks.push({
+    id: `morning_shenlun_${dayNum}`,
+    text: `申论范文精读：1篇（读+划重点+摘抄好词好句）`,
+    duration: 20,
+    period: 'morning',
+    type: 'reading',
+    subject: '申论',
+    completed: false
+  });
   
-  // 简化：复制第1天模板，但根据周次调整内容重点
-  const tasks = JSON.parse(JSON.stringify(defaultTasks));
+  // 4. 昨日知识点回顾：5-10分钟
+  if (dayNum > 1) {
+    tasks.push({
+      id: `morning_review_${dayNum}`,
+      text: `昨日知识点回顾：快速过一遍昨天学的核心考点`,
+      duration: 7,
+      period: 'morning',
+      type: 'review',
+      subject: '其他',
+      completed: false
+    });
+  }
   
-  // 根据周次调整科目重点
-  const weekFocus = {
-    1: { subject: '判断', topic: '判断推理' },
-    2: { subject: '资料', topic: '资料分析' },
-    3: { subject: '资料', topic: '资料分析强化+数量入门' },
-    4: { subject: '数量', topic: '数量关系' },
-    5: { subject: '常识', topic: '常识判断+言语巩固' },
-    6: { subject: '其他', topic: '全模块复习梳理' }
-  };
+  return tasks;
+}
+
+// 生成复盘时段任务（每天都有）
+function generateReviewTasks(dayNum) {
+  return [
+    {
+      id: `review_stats_${dayNum}`,
+      text: '统计今日做题正确率和用时',
+      duration: 5,
+      period: 'review',
+      type: 'review',
+      subject: '其他',
+      completed: false
+    },
+    {
+      id: `review_wrong_${dayNum}`,
+      text: '错题本整理：所有错题分类记录',
+      duration: 15,
+      period: 'review',
+      type: 'review',
+      subject: '其他',
+      completed: false
+    },
+    {
+      id: `review_plan_${dayNum}`,
+      text: '明日学习计划安排',
+      duration: 5,
+      period: 'review',
+      type: 'review',
+      subject: '其他',
+      completed: false
+    },
+    {
+      id: `review_anki_${dayNum}`,
+      text: 'Anki录入：今日成语+错题考点录入卡片',
+      duration: 5,
+      period: 'review',
+      type: 'review',
+      subject: '其他',
+      completed: false
+    }
+  ];
+}
+
+// 生成午间碎片任务（工作日可选）
+function generateNoonTasks(dayNum) {
+  return [
+    {
+      id: `noon_${dayNum}`,
+      text: '午间碎片：刷10道常识题/看一篇申论时评（可选）',
+      duration: 30,
+      period: 'noon',
+      type: 'exercise',
+      subject: '常识',
+      completed: false
+    }
+  ];
+}
+
+// 获取今日穿插课程（常识/政治理论交替：常识2天，政治1天）
+function getDailyInterleavedLesson(dayNum) {
+  // 计算循环：常识2天 + 政治1天 = 3天一个周期
+  const cycleDay = ((dayNum - 1) % 3) + 1; // 1,2,3 循环
   
-  const focus = weekFocus[Math.min(weekNum, 6)] || weekFocus[1];
+  let targetModuleId;
+  if (cycleDay <= 2) {
+    targetModuleId = 'changshi'; // 常识
+  } else {
+    targetModuleId = 'zhengzhi'; // 政治
+  }
   
-  // 修改任务描述（简化处理）
+  const module = COURSE_DATA.modules.find(m => m.id === targetModuleId);
+  if (!module) return null;
+  
+  // 找到下一节未完成的
+  for (const sc of module.subCourses) {
+    if (sc.allCompleted) continue;
+    for (const lesson of sc.lessons) {
+      if (!courseProgress[lesson.id]) {
+        return {
+          moduleId: module.id,
+          moduleName: module.name,
+          subCourseName: sc.name,
+          lessonId: lesson.id,
+          lessonName: lesson.name,
+          subject: module.id === 'changshi' ? '常识' : '其他'
+        };
+      }
+    }
+  }
+  
+  // 如果目标模块学完了，尝试另一个
+  const otherModuleId = targetModuleId === 'changshi' ? 'zhengzhi' : 'changshi';
+  const otherModule = COURSE_DATA.modules.find(m => m.id === otherModuleId);
+  if (!otherModule) return null;
+  
+  for (const sc of otherModule.subCourses) {
+    if (sc.allCompleted) continue;
+    for (const lesson of sc.lessons) {
+      if (!courseProgress[lesson.id]) {
+        return {
+          moduleId: otherModule.id,
+          moduleName: otherModule.name,
+          subCourseName: sc.name,
+          lessonId: lesson.id,
+          lessonName: lesson.name,
+          subject: otherModule.id === 'changshi' ? '常识' : '其他'
+        };
+      }
+    }
+  }
+  
+  return null;
+}
+
+// 获取当前学习阶段（基于课程进度）
+function getCurrentLearningPhase() {
+  const leibiStats = getSubCourseStats(COURSE_DATA.modules[0].subCourses[1]); // 类比推理
+  const dingyiStats = getSubCourseStats(COURSE_DATA.modules[0].subCourses[2]); // 定义判断
+  const luojiStats = getSubCourseStats(COURSE_DATA.modules[0].subCourses[3]); // 逻辑判断
+  const ziliaoStats = getSubCourseStats(COURSE_DATA.modules[1].subCourses[0]); // 资料分析
+  const shenlunStats = getSubCourseStats(COURSE_DATA.modules[2].subCourses[0]); // 申论
+  
+  const panduanDone = leibiStats.completed === leibiStats.total && 
+                      dingyiStats.completed === dingyiStats.total && 
+                      luojiStats.completed === luojiStats.total;
+  
+  const ziliaoDone = ziliaoStats.completed === ziliaoStats.total;
+  
+  if (!panduanDone) {
+    return { phase: 1, name: '判断推理收尾阶段', focus: '判断推理' };
+  } else if (!ziliaoDone) {
+    return { phase: 2, name: '资料分析主攻阶段', focus: '资料分析' };
+  } else {
+    return { phase: 3, name: '申论+数量关系阶段', focus: '申论+数量' };
+  }
+}
+
+// 获取今日主课程任务
+function getTodayMainCourses() {
+  const result = [];
+  const phase = getCurrentLearningPhase();
+  
+  // 判断推理收尾阶段
+  if (phase.phase === 1) {
+    // 顺序：类比推理 → 定义判断 → 逻辑判断
+    const subCourseOrder = ['panduan_leibi', 'panduan_dingyi', 'panduan_luoji'];
+    const panduanModule = COURSE_DATA.modules.find(m => m.id === 'panduan');
+    
+    for (const scId of subCourseOrder) {
+      const sc = panduanModule.subCourses.find(s => s.id === scId);
+      if (!sc || sc.allCompleted) continue;
+      
+      const stats = getSubCourseStats(sc);
+      if (stats.completed < stats.total) {
+        // 找到起始位置
+        let startIdx = 0;
+        for (let i = 0; i < sc.lessons.length; i++) {
+          if (!courseProgress[sc.lessons[i].id]) {
+            startIdx = i;
+            break;
+          }
+        }
+        
+        const isShort = sc.shortLessons;
+        const dailyCount = isShort ? 5 : 2; // 短课每天5节，其他每天2节
+        
+        for (let i = startIdx; i < sc.lessons.length && result.length < dailyCount; i++) {
+          const lesson = sc.lessons[i];
+          if (!courseProgress[lesson.id]) {
+            result.push({
+              moduleId: panduanModule.id,
+              moduleName: panduanModule.name,
+              subCourseId: sc.id,
+              subCourseName: sc.name,
+              teacher: sc.teacher,
+              lessonId: lesson.id,
+              lessonName: lesson.name,
+              lessonIndex: i + 1,
+              isShort: isShort,
+              subject: '判断'
+            });
+          }
+        }
+        
+        // 如果当前子课程还剩不多，且有下一个子课程，补充一些
+        if (result.length < dailyCount) {
+          const nextScIdx = subCourseOrder.indexOf(scId) + 1;
+          if (nextScIdx < subCourseOrder.length) {
+            const nextSc = panduanModule.subCourses.find(s => s.id === subCourseOrder[nextScIdx]);
+            if (nextSc && !nextSc.allCompleted) {
+              const nextStats = getSubCourseStats(nextSc);
+              if (nextStats.completed < nextStats.total) {
+                // 找下一个子课程的未完成节次
+                for (let i = 0; i < nextSc.lessons.length && result.length < dailyCount; i++) {
+                  if (!courseProgress[nextSc.lessons[i].id]) {
+                    result.push({
+                      moduleId: panduanModule.id,
+                      moduleName: panduanModule.name,
+                      subCourseId: nextSc.id,
+                      subCourseName: nextSc.name,
+                      teacher: nextSc.teacher,
+                      lessonId: nextSc.lessons[i].id,
+                      lessonName: nextSc.lessons[i].name,
+                      lessonIndex: i + 1,
+                      isShort: nextSc.shortLessons,
+                      subject: '判断'
+                    });
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        break; // 只处理当前主课程
+      }
+    }
+    
+    // 穿插：资料分析入门（如果判断推理快结束了）
+    if (result.length > 0) {
+      const leibi = panduanModule.subCourses.find(s => s.id === 'panduan_leibi');
+      const luoji = panduanModule.subCourses.find(s => s.id === 'panduan_luoji');
+      const leibiDone = getSubCourseStats(leibi).completed === getSubCourseStats(leibi).total;
+      const luojiStats = getSubCourseStats(luoji);
+      
+      // 如果类比推理已完成且逻辑判断学到一半以上，开始穿插资料分析
+      if (leibiDone && luojiStats.completed >= Math.floor(luojiStats.total / 2)) {
+        const ziliaoModule = COURSE_DATA.modules.find(m => m.id === 'ziliao');
+        const ziliaoSc = ziliaoModule.subCourses[0];
+        const ziliaoStats = getSubCourseStats(ziliaoSc);
+        if (ziliaoStats.completed < ziliaoStats.total && ziliaoStats.completed < 4) {
+          // 找下一节未完成的
+          for (let i = 0; i < ziliaoSc.lessons.length; i++) {
+            if (!courseProgress[ziliaoSc.lessons[i].id]) {
+              result.push({
+                moduleId: ziliaoModule.id,
+                moduleName: ziliaoModule.name,
+                subCourseId: ziliaoSc.id,
+                subCourseName: ziliaoSc.name,
+                teacher: ziliaoSc.teacher,
+                lessonId: ziliaoSc.lessons[i].id,
+                lessonName: ziliaoSc.lessons[i].name,
+                lessonIndex: i + 1,
+                isShort: false,
+                subject: '资料',
+                isInterleaved: true
+              });
+              break; // 只加1节入门
+            }
+          }
+        }
+      }
+    }
+  }
+  // 资料分析主攻阶段
+  else if (phase.phase === 2) {
+    const ziliaoModule = COURSE_DATA.modules.find(m => m.id === 'ziliao');
+    const ziliaoSc = ziliaoModule.subCourses[0];
+    const stats = getSubCourseStats(ziliaoSc);
+    
+    if (stats.completed < stats.total) {
+      let startIdx = 0;
+      for (let i = 0; i < ziliaoSc.lessons.length; i++) {
+        if (!courseProgress[ziliaoSc.lessons[i].id]) {
+          startIdx = i;
+          break;
+        }
+      }
+      
+      // 每天2节（正课+练习课算连续的两节）
+      for (let i = startIdx; i < ziliaoSc.lessons.length && result.length < 2; i++) {
+        const lesson = ziliaoSc.lessons[i];
+        if (!courseProgress[lesson.id]) {
+          result.push({
+            moduleId: ziliaoModule.id,
+            moduleName: ziliaoModule.name,
+            subCourseId: ziliaoSc.id,
+            subCourseName: ziliaoSc.name,
+            teacher: ziliaoSc.teacher,
+            lessonId: lesson.id,
+            lessonName: lesson.name,
+            lessonIndex: i + 1,
+            isShort: false,
+            subject: '资料',
+            isPracticeLesson: lesson.name.includes('练习') || lesson.name.includes('讲练')
+          });
+        }
+      }
+    }
+    
+    // 穿插：申论入门（资料分析学到一半后）
+    if (stats.completed >= Math.floor(stats.total / 2)) {
+      const shenlunModule = COURSE_DATA.modules.find(m => m.id === 'shenlun');
+      const shenlunSc = shenlunModule.subCourses[0];
+      const slStats = getSubCourseStats(shenlunSc);
+      if (slStats.completed < slStats.total && slStats.completed < 4) {
+        for (let i = 0; i < shenlunSc.lessons.length; i++) {
+          if (!courseProgress[shenlunSc.lessons[i].id]) {
+            result.push({
+              moduleId: shenlunModule.id,
+              moduleName: shenlunModule.name,
+              subCourseId: shenlunSc.id,
+              subCourseName: shenlunSc.name,
+              teacher: shenlunSc.teacher,
+              lessonId: shenlunSc.lessons[i].id,
+              lessonName: shenlunSc.lessons[i].name,
+              lessonIndex: i + 1,
+              isShort: false,
+              subject: '申论',
+              isInterleaved: true
+            });
+            break;
+          }
+        }
+      }
+    }
+  }
+  // 申论+数量关系阶段
+  else if (phase.phase === 3) {
+    const shenlunModule = COURSE_DATA.modules.find(m => m.id === 'shenlun');
+    const shenlunSc = shenlunModule.subCourses[0];
+    const shuliangModule = COURSE_DATA.modules.find(m => m.id === 'shuliang');
+    const shuliangSc = shuliangModule.subCourses[0];
+    
+    const slStats = getSubCourseStats(shenlunSc);
+    const sl2Stats = getSubCourseStats(shuliangSc);
+    
+    // 申论每天2节
+    if (slStats.completed < slStats.total) {
+      let startIdx = 0;
+      for (let i = 0; i < shenlunSc.lessons.length; i++) {
+        if (!courseProgress[shenlunSc.lessons[i].id]) {
+          startIdx = i;
+          break;
+        }
+      }
+      
+      for (let i = startIdx; i < shenlunSc.lessons.length && result.filter(r => r.subject === '申论').length < 2; i++) {
+        const lesson = shenlunSc.lessons[i];
+        if (!courseProgress[lesson.id]) {
+          result.push({
+            moduleId: shenlunModule.id,
+            moduleName: shenlunModule.name,
+            subCourseId: shenlunSc.id,
+            subCourseName: shenlunSc.name,
+            teacher: shenlunSc.teacher,
+            lessonId: lesson.id,
+            lessonName: lesson.name,
+            lessonIndex: i + 1,
+            isShort: false,
+            subject: '申论'
+          });
+        }
+      }
+    }
+    
+    // 数量关系每天1节（穿插进行，因为数量关系较难）
+    if (sl2Stats.completed < sl2Stats.total) {
+      let startIdx = 0;
+      for (let i = 0; i < shuliangSc.lessons.length; i++) {
+        if (!courseProgress[shuliangSc.lessons[i].id]) {
+          startIdx = i;
+          break;
+        }
+      }
+      
+      const lesson = shuliangSc.lessons[startIdx];
+      if (lesson && !courseProgress[lesson.id]) {
+        result.push({
+          moduleId: shuliangModule.id,
+          moduleName: shuliangModule.name,
+          subCourseId: shuliangSc.id,
+          subCourseName: shuliangSc.name,
+          teacher: shuliangSc.teacher,
+          lessonId: lesson.id,
+          lessonName: lesson.name,
+          lessonIndex: startIdx + 1,
+          isShort: false,
+          subject: '数量'
+        });
+      }
+    }
+  }
+  
+  return result;
+}
+
+// 为网课生成配套练习任务
+function generatePracticeTasks(courseInfo, dayNum) {
+  const practices = [];
+  const { subCourseName, subject, lessonName, lessonIndex, isShort, isPracticeLesson } = courseInfo;
+  
+  // 如果是练习课本身，不再生成额外练习
+  if (isPracticeLesson) return practices;
+  
+  if (subject === '判断') {
+    if (subCourseName === '类比推理') {
+      practices.push({
+        id: `practice_lb_${dayNum}_${lessonIndex}`,
+        text: `类比推理练习：20道题（学完即练，趁热打铁）`,
+        duration: 15,
+        type: 'exercise',
+        subject: '判断',
+        completed: false
+      });
+    } else if (subCourseName === '定义判断') {
+      practices.push({
+        id: `practice_dy_${dayNum}_${lessonIndex}`,
+        text: `定义判断练习：15道题（限时训练）`,
+        duration: 20,
+        type: 'exercise',
+        subject: '判断',
+        completed: false
+      });
+    } else if (subCourseName === '逻辑判断') {
+      practices.push({
+        id: `practice_lj_${dayNum}_${lessonIndex}`,
+        text: `逻辑判断练习：10-15道题（第${lessonIndex}节内容巩固）`,
+        duration: 20,
+        type: 'exercise',
+        subject: '判断',
+        completed: false
+      });
+    }
+  } else if (subject === '资料') {
+    practices.push({
+      id: `practice_zl_${dayNum}_${lessonIndex}`,
+      text: `资料分析练习：2篇材料（${lessonName}知识点应用）`,
+      duration: 25,
+      type: 'exercise',
+      subject: '资料',
+      completed: false
+    });
+  } else if (subject === '申论') {
+    practices.push({
+      id: `practice_sl_${dayNum}_${lessonIndex}`,
+      text: `申论练习：1道${subCourseName}对应题型（动手写，不能只看）`,
+      duration: 30,
+      type: 'exercise',
+      subject: '申论',
+      completed: false
+    });
+  } else if (subject === '数量') {
+    practices.push({
+      id: `practice_sl2_${dayNum}_${lessonIndex}`,
+      text: `数量关系练习：5-8道题（${lessonName}对应题型）`,
+      duration: 20,
+      type: 'exercise',
+      subject: '数量',
+      completed: false
+    });
+  }
+  
+  // 错题分析
+  if (practices.length > 0) {
+    practices.push({
+      id: `practice_analyze_${dayNum}_${lessonIndex}`,
+      text: `错题分析：对答案+整理错题本（${subCourseName}）`,
+      duration: 10,
+      type: 'review',
+      subject: subject,
+      completed: false
+    });
+  }
+  
+  return practices;
+}
+
+// 根据天数生成完整的每日任务
+function generateDayTasks(dayNum) {
+  const isWeekendDay = isWeekend(dayNum - 1); // dayNum-1 = offset
+  const tasks = {};
+  
+  // 初始化所有时段
+  const sections = isWeekendDay ? weekendSections : weekdaySections;
+  sections.forEach(s => { tasks[s] = []; });
+  
+  // 1. 晨读时段任务
+  tasks.morning = generateMorningTasks(dayNum);
+  
+  // 2. 午间碎片（仅工作日）
+  if (!isWeekendDay) {
+    tasks.noon = generateNoonTasks(dayNum);
+  }
+  
+  // 3. 主课程任务 + 配套练习（按子课程分组）
+  const mainCourses = getTodayMainCourses();
+  
+  // 按子课程分组
+  const subCourseGroups = {};
+  mainCourses.forEach(course => {
+    const key = course.subCourseId;
+    if (!subCourseGroups[key]) {
+      subCourseGroups[key] = [];
+    }
+    subCourseGroups[key].push(course);
+  });
+  
+  // 将课程任务和练习分配到列表
+  let courseTaskList = [];
+  
+  for (const scId in subCourseGroups) {
+    const courses = subCourseGroups[scId];
+    const firstCourse = courses[0];
+    
+    // 添加所有网课任务
+    courses.forEach((course, idx) => {
+      const videoTask = {
+        id: `course_${course.lessonId}`,
+        text: `网课：${course.subCourseName}-${course.lessonName}（${course.teacher}）第${course.lessonIndex}节`,
+        duration: course.isShort ? 15 : 35,
+        type: 'video',
+        subject: course.subject,
+        completed: false,
+        videoId: course.lessonId,
+        isCourseTask: true,
+        courseLessonId: course.lessonId
+      };
+      courseTaskList.push(videoTask);
+    });
+    
+    // 每个子课程每天只生成1套练习（不是每节1套）
+    // 统计正课数量（排除练习课）
+    const nonPracticeLessons = courses.filter(c => !c.isPracticeLesson);
+    if (nonPracticeLessons.length > 0) {
+      // 生成1套综合练习
+      const practiceCount = firstCourse.isShort ? 20 : (firstCourse.subject === '申论' ? 1 : 15);
+      const practiceDuration = firstCourse.isShort ? 15 : (firstCourse.subject === '申论' ? 30 : 25);
+      
+      courseTaskList.push({
+        id: `practice_${scId}_${dayNum}`,
+        text: `${firstCourse.subCourseName}练习：${practiceCount}道题（学完即练，趁热打铁）`,
+        duration: practiceDuration,
+        type: 'exercise',
+        subject: firstCourse.subject,
+        completed: false
+      });
+      
+      // 错题分析
+      courseTaskList.push({
+        id: `analyze_${scId}_${dayNum}`,
+        text: `错题分析：对答案+整理错题本（${firstCourse.subCourseName}）`,
+        duration: 10,
+        type: 'review',
+        subject: firstCourse.subject,
+        completed: false
+      });
+    }
+  }
+  
+  // 分配到不同时段
+  if (isWeekendDay) {
+    // 周末：上午、下午、晚间三个时段
+    const third = Math.ceil(courseTaskList.length / 3);
+    const twoThirds = Math.ceil(courseTaskList.length * 2 / 3);
+    
+    tasks.weekend_morning = courseTaskList.slice(0, third);
+    tasks.weekend_afternoon = courseTaskList.slice(third, twoThirds);
+    tasks.weekend_evening = courseTaskList.slice(twoThirds);
+    
+    // 晚间加一个薄弱环节强化
+    tasks.weekend_evening.push({
+      id: `weak_review_${dayNum}`,
+      text: '薄弱环节强化：针对本周错题进行专项练习',
+      duration: 30,
+      type: 'exercise',
+      subject: '其他',
+      completed: false
+    });
+  } else {
+    // 工作日：晚间第一时段 + 晚间第二时段
+    // 尽量让第一时段以网课为主，第二时段以练习为主
+    const videoTasks = courseTaskList.filter(t => t.type === 'video');
+    const otherTasks = courseTaskList.filter(t => t.type !== 'video');
+    
+    if (videoTasks.length >= 2) {
+      // 如果网课多，分两半
+      const halfVideo = Math.ceil(videoTasks.length / 2);
+      tasks.evening1 = videoTasks.slice(0, halfVideo);
+      // 第一时段也加一些练习
+      const halfOther = Math.floor(otherTasks.length / 2);
+      tasks.evening1 = tasks.evening1.concat(otherTasks.slice(0, halfOther));
+      tasks.evening2 = videoTasks.slice(halfVideo).concat(otherTasks.slice(halfOther));
+    } else {
+      // 网课少，就均匀分配
+      const half = Math.ceil(courseTaskList.length / 2);
+      tasks.evening1 = courseTaskList.slice(0, half);
+      tasks.evening2 = courseTaskList.slice(half);
+    }
+    
+    // 第二时段末尾加错题整理
+    if (tasks.evening2.length > 0) {
+      tasks.evening2.push({
+        id: `evening_wrong_${dayNum}`,
+        text: '晚间错题整理：汇总今日错题，分析错误原因',
+        duration: 15,
+        type: 'review',
+        subject: '其他',
+        completed: false
+      });
+    }
+  }
+  
+  // 4. 复盘时段任务
+  tasks.review = generateReviewTasks(dayNum);
+  
   return tasks;
 }
 
@@ -1535,6 +2442,9 @@ function render() {
   renderScoreOverview();
   renderTestList();
   
+  // Course progress
+  renderCourseProgress();
+  
   // 初始化图表（如果当前标签页可见）
   // 延迟到下一帧，确保DOM布局完成，容器有宽度
   if (typeof requestAnimationFrame !== 'undefined') {
@@ -1555,35 +2465,56 @@ function render() {
 function renderTasks(dayData) {
   const container = document.getElementById('taskContainer');
   let html = '';
+  
+  // 按正确的时段顺序显示
+  const dayKey = getDayKey(currentDayOffset);
+  const isWeekendDay = isWeekend(currentDayOffset);
+  const sections = isWeekendDay ? weekendSections : weekdaySections;
+  
+  // 任务类型图标
+  const typeIcons = {
+    'video': '🎬',
+    'exercise': '✏️',
+    'reading': '📖',
+    'review': '📋',
+    'other': '📌'
+  };
 
-  for (const section of Object.keys(dayData.tasks)) {
+  for (const section of sections) {
     const tasks = dayData.tasks[section];
-    if (tasks.length === 0) continue;
+    if (!tasks || tasks.length === 0) continue;
 
     const totalMin = tasks.reduce((s, t) => s + t.duration, 0);
     const completedCount = tasks.filter(t => t.completed).length;
+    const sectionName = sectionNames[section] || section;
 
     html += `
       <div class="task-section">
         <div class="task-section-title">
-          <span>${sectionNames[section]}</span>
+          <span>${sectionName}</span>
           <span class="time-badge">${completedCount}/${tasks.length} · ${totalMin}分钟</span>
         </div>
     `;
 
     tasks.forEach(task => {
       const subjClass = subjectClass[task.subject] || '';
+      const typeIcon = typeIcons[task.type] || typeIcons['other'];
+      const isCarried = task.carried || task.isCarryOver;
+      
       html += `
-        <div class="task-item ${task.completed ? 'completed' : ''} ${task.carried ? 'carried' : ''}" 
+        <div class="task-item ${task.completed ? 'completed' : ''} ${isCarried ? 'carried' : ''}" 
              onclick="toggleTask('${section}', '${task.id}')">
           <div class="task-checkbox"></div>
           <div class="task-content">
             <div class="task-text">
-              ${task.subject !== '其他' ? `<span class="subject-tag ${subjClass}">${task.subject}</span> ` : ''}
+              <span class="task-type-icon">${typeIcon}</span>
+              ${task.subject && task.subject !== '其他' ? `<span class="subject-tag ${subjClass}">${task.subject}</span> ` : ''}
               ${task.text}
             </div>
             <div class="task-meta">
-              ${task.carried ? '<span class="meta-tag carry-tag">⏩ 昨日顺延</span>' : ''}
+              ${isCarried ? '<span class="meta-tag carry-tag">⏩ 昨日顺延</span>' : ''}
+              ${task.type === 'video' ? '<span class="meta-tag" style="color: var(--accent2);">网课</span>' : ''}
+              ${task.type === 'exercise' ? '<span class="meta-tag" style="color: var(--success);">练习</span>' : ''}
             </div>
           </div>
           <div class="task-duration">${task.duration}分钟</div>
@@ -1592,6 +2523,11 @@ function renderTasks(dayData) {
     });
 
     html += '</div>';
+  }
+  
+  // 如果没有任务（不应该发生）
+  if (html === '') {
+    html = '<p style="color: var(--muted); text-align: center; padding: 20px;">暂无任务</p>';
   }
 
   container.innerHTML = html;
@@ -1657,6 +2593,16 @@ function toggleTask(section, taskId) {
   const task = dayData.tasks[section].find(t => t.id === taskId);
   if (task) {
     task.completed = !task.completed;
+    // 如果是课程任务，同步更新课程进度
+    if (task.isCourseTask && task.courseLessonId) {
+      if (task.completed) {
+        courseProgress[task.courseLessonId] = true;
+      } else {
+        delete courseProgress[task.courseLessonId];
+      }
+      saveCourseProgress();
+      renderCourseProgress();
+    }
     saveData();
     render();
   }
@@ -1685,11 +2631,17 @@ function addTask() {
     id: 'custom_' + Date.now(),
     text,
     duration,
+    period: section,
+    type: 'other',
     subject,
     completed: false,
     custom: true
   };
 
+  // 确保目标时段存在
+  if (!dayData.tasks[section]) {
+    dayData.tasks[section] = [];
+  }
   dayData.tasks[section].push(newTask);
   saveData();
   render();
@@ -1823,13 +2775,24 @@ function clearAllData() {
   if (!confirm('确定要清空所有数据吗？此操作不可恢复！')) return;
   if (!confirm('真的确定吗？所有学习记录都会消失！')) return;
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(COURSE_STORAGE_KEY);
+  localStorage.removeItem(COURSE_UI_KEY);
   data = loadData();
+  courseProgress = {};
+  courseUIState = { expandedModules: ['panduan'] };
+  loadCourseProgress();
   currentDayOffset = 0;
   render();
 }
 
 function exportData() {
-  const dataStr = JSON.stringify(data, null, 2);
+  const exportObj = {
+    dashboard: data,
+    courseProgress: courseProgress,
+    courseUI: courseUIState,
+    exportDate: new Date().toISOString()
+  };
+  const dataStr = JSON.stringify(exportObj, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1849,7 +2812,23 @@ function importData() {
     reader.onload = function(e) {
       try {
         const imported = JSON.parse(e.target.result);
-        if (imported.days && imported.stats) {
+        // 支持新旧两种格式
+        if (imported.dashboard && imported.dashboard.days) {
+          // 新格式：包含课程进度
+          data = imported.dashboard;
+          if (imported.courseProgress) {
+            courseProgress = imported.courseProgress;
+            saveCourseProgress();
+          }
+          if (imported.courseUI) {
+            courseUIState = imported.courseUI;
+            saveCourseUI();
+          }
+          saveData();
+          render();
+          alert('导入成功！包含课程进度数据');
+        } else if (imported.days && imported.stats) {
+          // 旧格式：只有dashboard数据
           data = imported;
           saveData();
           render();
@@ -1873,6 +2852,716 @@ document.getElementById('addTaskModal').addEventListener('click', function(e) {
 document.getElementById('addTestModal').addEventListener('click', function(e) {
   if (e.target === this) closeAddTestModal();
 });
+
+// ==================== 课程进度追踪 ====================
+const COURSE_STORAGE_KEY = 'gongkao_course_progress';
+const COURSE_UI_KEY = 'gongkao_course_ui';
+
+// 生成指定数量的课程节次名称（通用模板）
+function genLessons(prefix, count, customNames) {
+  const lessons = [];
+  for (let i = 1; i <= count; i++) {
+    const custom = customNames && customNames[i];
+    lessons.push({
+      id: `${prefix}_${i}`,
+      name: custom || `第${i}节`
+    });
+  }
+  return lessons;
+}
+
+// 课程主数据
+const COURSE_DATA = {
+  modules: [
+    {
+      id: 'panduan',
+      name: '判断推理',
+      icon: '🧩',
+      order: 1,
+      subCourses: [
+        {
+          id: 'panduan_tuxing',
+          name: '图形推理',
+          teacher: '刘义恒',
+          allCompleted: true,
+          totalLessons: 15,
+          lessons: []
+        },
+        {
+          id: 'panduan_leibi',
+          name: '类比推理',
+          teacher: '聂佳',
+          shortLessons: true,
+          isCurrent: true,
+          lessons: genLessons('lb', 38, {
+            1: '类比推理概述',
+            2: '近义词与反义词1',
+            3: '近义词与反义词2',
+            4: '近义词与反义词3',
+            5: '近反义二级辨析-感情色彩',
+            6: '近反义二级辨析-程度比较',
+            7: '近反义二级辨析-语义细分',
+            8: '近反义二级辨析-词性',
+            9: '比喻象征义1',
+            10: '比喻象征义2',
+            11: '同字不同义',
+            12: '并列-矛盾关系1',
+            13: '并列-矛盾关系2',
+            14: '并列-反对关系1',
+            15: '并列-反对关系2',
+            16: '并列-反对关系3',
+            17: '包含-种属关系1',
+            18: '包含-种属关系2',
+            19: '包含-组成关系',
+            20: '交叉关系1',
+            21: '交叉关系2',
+            22: '全同关系',
+            23: '原材料与成品对应关系1',
+            24: '原材料与成品对应关系2',
+            25: '原材料与成品对应关系3',
+            26: '功能对应关系1',
+            27: '功能对应关系2',
+            28: '属性对应关系',
+            29: '多个动作排顺序',
+            30: '因果对应关系1',
+            31: '因果对应关系2',
+            32: '方式-目的对应关系1',
+            33: '方式-目的对应关系2',
+            34: '必要条件对应关系',
+            35: '语法关系1',
+            36: '语法关系2',
+            37: '语法关系3',
+            38: '类比推理如何复盘错题'
+          })
+        },
+        {
+          id: 'panduan_dingyi',
+          name: '定义判断',
+          teacher: '程意',
+          lessons: genLessons('dy', 1, {
+            1: '定义判断'
+          })
+        },
+        {
+          id: 'panduan_luoji',
+          name: '逻辑判断',
+          teacher: '程意',
+          lessons: genLessons('lj', 10, {
+            1: '直言命题、联言命题',
+            2: '选言命题、假言命题',
+            3: '综合推理',
+            4: '朴素逻辑',
+            5: '加强削弱型1',
+            6: '加强削弱型2',
+            7: '加强削弱型3',
+            8: '加强削弱型4',
+            9: '加强削弱型综合训练',
+            10: '前提解释假设评价'
+          })
+        }
+      ]
+    },
+    {
+      id: 'ziliao',
+      name: '资料分析',
+      icon: '📊',
+      order: 2,
+      subCourses: [
+        {
+          id: 'ziliao_main',
+          name: '资料分析',
+          teacher: '唐宋',
+          lessons: genLessons('zl', 24, {
+            1: '资料1-通用速算技巧',
+            2: '理论讲练课后练习1',
+            3: '资料2-基期量',
+            4: '理论讲练课后练习2',
+            5: '资料3-增长量',
+            6: '理论讲练课后练习3',
+            7: '资料4-一般增长率',
+            8: '理论讲练课后练习4',
+            9: '间隔与乘积增长率',
+            10: '理论讲练课后练习5',
+            11: '资料6-年均增长与现期量',
+            12: '理论讲练课后练习6',
+            13: '资料7-现期比重',
+            14: '理论讲练课后练习7',
+            15: '资料8-现期平均数、倍数',
+            16: '理论讲练课后练习8',
+            17: '资料9-基期比例',
+            18: '理论讲练课后练习9',
+            19: '资料10-两期比例',
+            20: '理论讲练课后练习10',
+            21: '资料11-混合专题',
+            22: '理论讲练课后练习11',
+            23: '资料13-综合训练',
+            24: '理论讲练课后练习12'
+          })
+        }
+      ]
+    },
+    {
+      id: 'shenlun',
+      name: '申论',
+      icon: '✍️',
+      order: 3,
+      subCourses: [
+        {
+          id: 'shenlun_main',
+          name: '申论',
+          teacher: '袁东',
+          lessons: genLessons('sl', 22, {
+            1: '申论之根【概括对策1】',
+            2: '申论之根【概括对策2】',
+            3: '概括题【概括对策3】',
+            4: '概括题【概括问题】',
+            5: '概括题【概括原因】',
+            6: '概括题【概括作用1】',
+            7: '概括题【概括作用2】',
+            8: '概括题【概括综合1】',
+            9: '概括题【概括综合2】',
+            10: '分析题【词句理解1】',
+            11: '分析题【词句理解2】',
+            12: '分析题【启示分析】',
+            13: '分析题【变化分析】',
+            14: '提出对策【复合对策1】',
+            15: '提出对策【复合对策2】',
+            16: '公文写作【措施内容】',
+            17: '公文写作【案例摘要】',
+            18: '公文写作【推荐材料】',
+            19: '公文写作【汇报提纲】',
+            20: '公文写作【简报】',
+            21: '公文写作【发布词】',
+            22: '公文写作【宣传稿】'
+          })
+        }
+      ]
+    },
+    {
+      id: 'shuliang',
+      name: '数量关系',
+      icon: '🔢',
+      order: 4,
+      subCourses: [
+        {
+          id: 'shuliang_main',
+          name: '数量关系',
+          teacher: '林凡',
+          lessons: genLessons('sl2', 16, {
+            1: '数量1-和差倍比问题',
+            2: '理论讲练习1',
+            3: '数量2-工程问题',
+            4: '理论讲练习2',
+            5: '数量3-几何问题',
+            6: '理论讲练习3',
+            7: '数量4-利润与容斥问题',
+            8: '理论讲练习4',
+            9: '数量5-行程问题',
+            10: '课后练习5',
+            11: '数量6-排列组合问题',
+            12: '课后练习6',
+            13: '数量7-排列组合与概率',
+            14: '课后练习7',
+            15: '数量8-最值与周期问题',
+            16: '课后练习8'
+          })
+        }
+      ]
+    },
+    {
+      id: 'changshi',
+      name: '常识判断',
+      icon: '📚',
+      order: 5,
+      interleaved: true,
+      subCourses: [
+        {
+          id: 'cs_wenshi',
+          name: '文史常识',
+          teacher: '常识专项',
+          lessons: genLessons('cs_ws', 6, {
+            1: '文史常识-历史知识1',
+            2: '文史常识-历史知识2',
+            3: '文史常识-文学知识1',
+            4: '文史常识-文学知识2',
+            5: '文史常识-文化知识1',
+            6: '文史常识6'
+          })
+        },
+        {
+          id: 'cs_keji',
+          name: '科技常识',
+          teacher: '常识专项',
+          lessons: genLessons('cs_kj', 5, {
+            1: '科技常识1',
+            2: '科技常识2',
+            3: '科技常识3',
+            4: '科技常识4',
+            5: '科技常识5'
+          })
+        },
+        {
+          id: 'cs_jingji',
+          name: '经济常识',
+          teacher: '常识专项',
+          lessons: genLessons('cs_jj', 2, {
+            1: '经济常识1',
+            2: '经济常识2'
+          })
+        },
+        {
+          id: 'cs_dili',
+          name: '地理常识',
+          teacher: '常识专项',
+          lessons: genLessons('cs_dl', 2, {
+            1: '地理常识1',
+            2: '地理常识2'
+          })
+        },
+        {
+          id: 'cs_falv',
+          name: '法律常识',
+          teacher: '常识专项',
+          lessons: genLessons('cs_fl', 7, {
+            1: '法律导学',
+            2: '法律常识1-民法1',
+            3: '法律常识2-民法2',
+            4: '法律常识3-刑法',
+            5: '法律常识4-行政法',
+            6: '法律常识5-宪法',
+            7: '法律常识6-法理学'
+          })
+        }
+      ]
+    },
+    {
+      id: 'zhengzhi',
+      name: '政治理论',
+      icon: '🏛️',
+      order: 6,
+      interleaved: true,
+      subCourses: [
+        {
+          id: 'zz_main',
+          name: '政治理论',
+          teacher: '时政专项',
+          lessons: genLessons('zz', 10, {
+            1: '新思想-总论1',
+            2: '新思想-总论2',
+            3: '新思想-经济建设',
+            4: '新思想-政治建设',
+            5: '新思想-生态建设',
+            6: '新思想-四个全面',
+            7: '马原理-科学社会主义1',
+            8: '马原理-科学社会主义2',
+            9: '马原-唯物主义',
+            10: '马原-政治经济学'
+          })
+        }
+      ]
+    },
+    {
+      id: 'yanyu',
+      name: '言语理解',
+      icon: '📖',
+      order: 7,
+      subCourses: [
+        {
+          id: 'yy_main',
+          name: '言语理解',
+          teacher: '已完成',
+          allCompleted: true,
+          totalLessons: 20,
+          lessons: []
+        }
+      ]
+    }
+  ]
+};
+
+// 课程进度状态
+let courseProgress = {}; // { lessonId: true/false }
+let courseUIState = { expandedModules: ['panduan'] }; // 默认展开判断推理
+
+// 加载课程进度
+function loadCourseProgress() {
+  try {
+    const saved = localStorage.getItem(COURSE_STORAGE_KEY);
+    if (saved) {
+      courseProgress = JSON.parse(saved);
+    } else {
+      // 初始化：图形推理全部完成，类比推理前14节完成（当前在第15节），言语理解完成
+      courseProgress = {};
+      // 图形推理标记为全部完成（无具体节次）
+      // 类比推理：前14节已完成（当前看到第15节）
+      for (let i = 1; i <= 14; i++) {
+        courseProgress[`lb_${i}`] = true;
+      }
+      // 言语理解全部完成
+      // 其他课程未开始
+      saveCourseProgress();
+    }
+  } catch(e) {
+    courseProgress = {};
+  }
+
+  try {
+    const uiSaved = localStorage.getItem(COURSE_UI_KEY);
+    if (uiSaved) {
+      courseUIState = JSON.parse(uiSaved);
+    }
+  } catch(e) {}
+}
+
+// 保存课程进度
+function saveCourseProgress() {
+  localStorage.setItem(COURSE_STORAGE_KEY, JSON.stringify(courseProgress));
+}
+
+// 保存UI状态
+function saveCourseUI() {
+  localStorage.setItem(COURSE_UI_KEY, JSON.stringify(courseUIState));
+}
+
+// 获取模块的总节数和已学节数
+function getModuleStats(moduleId) {
+  const module = COURSE_DATA.modules.find(m => m.id === moduleId);
+  if (!module) return { total: 0, completed: 0 };
+  
+  let total = 0;
+  let completed = 0;
+  
+  module.subCourses.forEach(sc => {
+    if (sc.allCompleted) {
+      // 全部完成的课程，使用 totalLessons 或默认15节
+      const scTotal = sc.totalLessons || 15;
+      total += scTotal;
+      completed += scTotal;
+    } else {
+      total += sc.lessons.length;
+      sc.lessons.forEach(l => {
+        if (courseProgress[l.id]) completed++;
+      });
+    }
+  });
+  
+  return { total, completed };
+}
+
+// 获取全部课程统计
+function getTotalCourseStats() {
+  let total = 0;
+  let completed = 0;
+  
+  COURSE_DATA.modules.forEach(m => {
+    const stats = getModuleStats(m.id);
+    total += stats.total;
+    completed += stats.completed;
+  });
+  
+  return { total, completed, percent: total > 0 ? Math.round((completed / total) * 100) : 0 };
+}
+
+// 获取子课程统计
+function getSubCourseStats(subCourse) {
+  if (subCourse.allCompleted) {
+    const total = subCourse.totalLessons || 15;
+    return { total, completed: total, percent: 100 };
+  }
+  const total = subCourse.lessons.length;
+  let completed = 0;
+  subCourse.lessons.forEach(l => {
+    if (courseProgress[l.id]) completed++;
+  });
+  return { total, completed, percent: total > 0 ? Math.round((completed / total) * 100) : 0 };
+}
+
+// 获取当前正在学习的子课程（第一个未完成的）
+function getCurrentSubCourse() {
+  // 基础阶段学习顺序
+  const order = [
+    { moduleId: 'panduan', subCourseIds: ['panduan_leibi', 'panduan_dingyi', 'panduan_luoji'] },
+    { moduleId: 'ziliao', subCourseIds: ['ziliao_main'] },
+    { moduleId: 'shenlun', subCourseIds: ['shenlun_main'] },
+    { moduleId: 'shuliang', subCourseIds: ['shuliang_main'] },
+  ];
+
+  for (const phase of order) {
+    const module = COURSE_DATA.modules.find(m => m.id === phase.moduleId);
+    if (!module) continue;
+    for (const scId of phase.subCourseIds) {
+      const sc = module.subCourses.find(s => s.id === scId);
+      if (!sc || sc.allCompleted) continue;
+      const stats = getSubCourseStats(sc);
+      if (stats.completed < stats.total) {
+        return { module, subCourse: sc };
+      }
+    }
+  }
+  
+  return null;
+}
+
+// 获取穿插课程（常识+政治理论）的下一节
+function getInterleavedLessons(count) {
+  const lessons = [];
+  const interleavedIds = ['changshi', 'zhengzhi'];
+  
+  for (const modId of interleavedIds) {
+    const module = COURSE_DATA.modules.find(m => m.id === modId);
+    if (!module) continue;
+    
+    for (const sc of module.subCourses) {
+      if (sc.allCompleted) continue;
+      for (const lesson of sc.lessons) {
+        if (!courseProgress[lesson.id]) {
+          lessons.push({
+            module,
+            subCourse: sc,
+            lesson
+          });
+          if (lessons.length >= count) return lessons;
+          break; // 每个子课程只取一节
+        }
+      }
+    }
+  }
+  
+  return lessons;
+}
+
+// 切换课程节次完成状态
+function toggleLesson(lessonId) {
+  courseProgress[lessonId] = !courseProgress[lessonId];
+  if (!courseProgress[lessonId]) {
+    delete courseProgress[lessonId];
+  }
+  saveCourseProgress();
+  renderCourseProgress();
+  
+  // 同步更新当日任务中的课程任务
+  syncCourseTasksWithProgress();
+}
+
+// 切换模块展开/收起
+function toggleModule(moduleId) {
+  const idx = courseUIState.expandedModules.indexOf(moduleId);
+  if (idx >= 0) {
+    courseUIState.expandedModules.splice(idx, 1);
+  } else {
+    courseUIState.expandedModules.push(moduleId);
+  }
+  saveCourseUI();
+  renderCourseProgress();
+}
+
+// 渲染课程进度
+function renderCourseProgress() {
+  const stats = getTotalCourseStats();
+  document.getElementById('courseTotalPercent').textContent = stats.percent + '%';
+  document.getElementById('courseTotalText').textContent = `已学 ${stats.completed} / ${stats.total} 节`;
+  document.getElementById('courseTotalBar').style.width = stats.percent + '%';
+  
+  const current = getCurrentSubCourse();
+  const currentScId = current ? current.subCourse.id : null;
+  
+  const container = document.getElementById('courseModuleList');
+  let html = '';
+  
+  COURSE_DATA.modules.forEach(mod => {
+    const modStats = getModuleStats(mod.id);
+    const modPercent = modStats.total > 0 ? Math.round((modStats.completed / modStats.total) * 100) : 0;
+    const isExpanded = courseUIState.expandedModules.includes(mod.id);
+    const hasCurrent = current && current.module.id === mod.id;
+    const isAllDone = modStats.completed === modStats.total && modStats.total > 0;
+    
+    // 获取模块主教师
+    let mainTeacher = '';
+    if (mod.subCourses.length === 1) {
+      mainTeacher = mod.subCourses[0].teacher;
+    } else {
+      const teachers = [...new Set(mod.subCourses.map(s => s.teacher))].filter(t => t !== '常识专项' && t !== '时政专项');
+      mainTeacher = teachers.slice(0, 2).join('、');
+    }
+    
+    html += `
+      <div class="course-module ${isExpanded ? 'expanded' : ''} ${hasCurrent ? 'current' : ''}">
+        <div class="course-module-header" onclick="toggleModule('${mod.id}')">
+          <span class="course-module-arrow">▶</span>
+          <div class="course-module-info">
+            <div class="course-module-name">
+              <span>${mod.icon} ${mod.name}</span>
+              <span class="course-module-teacher">${mainTeacher}</span>
+              ${isAllDone ? '<span class="completed-badge">已完成</span>' : ''}
+              ${hasCurrent ? '<span class="current-badge">学习中</span>' : ''}
+            </div>
+            <div class="course-module-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${modPercent}%"></div>
+              </div>
+              <div class="course-module-progress-text">
+                <span>${modStats.completed}/${modStats.total} 节</span>
+                <span>${modPercent}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="course-module-body">
+    `;
+    
+    // 渲染子课程
+    mod.subCourses.forEach(sc => {
+      const scStats = getSubCourseStats(sc);
+      const scPercent = scStats.total > 0 ? Math.round((scStats.completed / scStats.total) * 100) : 0;
+      const isScCurrent = currentScId === sc.id;
+      const isScDone = sc.allCompleted || (scStats.completed === scStats.total && scStats.total > 0);
+      
+      // 找当前节次
+      let currentLessonIdx = -1;
+      if (!sc.allCompleted) {
+        for (let i = 0; i < sc.lessons.length; i++) {
+          if (!courseProgress[sc.lessons[i].id]) {
+            currentLessonIdx = i;
+            break;
+          }
+        }
+      }
+      
+      html += `
+        <div class="course-subgroup">
+          <div class="course-subgroup-title">
+            <span>${sc.name} ${isScCurrent ? '<span class="current-badge">当前</span>' : ''} ${isScDone ? '<span class="completed-badge">✓</span>' : ''}</span>
+            <span class="subgroup-teacher">${sc.teacher} · ${scStats.completed}/${scStats.total}</span>
+          </div>
+      `;
+      
+      if (sc.allCompleted || sc.lessons.length === 0) {
+        html += `<div class="course-empty">✓ 全部完成</div>`;
+      } else {
+        html += `<div class="lesson-list">`;
+        sc.lessons.forEach((lesson, idx) => {
+          const isCompleted = courseProgress[lesson.id];
+          const isCurrent = isScCurrent && idx === currentLessonIdx;
+          html += `
+            <div class="lesson-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current-lesson' : ''}" 
+                 onclick="toggleLesson('${lesson.id}'); event.stopPropagation();">
+              <div class="lesson-checkbox"></div>
+              <span class="lesson-index">${idx + 1}.</span>
+              <span class="lesson-name">${lesson.name}</span>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+      
+      html += `</div>`;
+    });
+    
+    html += `
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+// 生成今日课程任务
+function generateDailyCourseTasks(dayKey) {
+  const tasks = [];
+  const current = getCurrentSubCourse();
+  
+  if (!current) return tasks;
+  
+  const { module, subCourse } = current;
+  const isShort = subCourse.shortLessons;
+  const dailyCount = isShort ? 5 : 2; // 短课4-6节取5节，其他2-3节取2节
+  
+  // 找当前未完成的起始节次
+  let startIdx = 0;
+  for (let i = 0; i < subCourse.lessons.length; i++) {
+    if (!courseProgress[subCourse.lessons[i].id]) {
+      startIdx = i;
+      break;
+    }
+  }
+  
+  // 生成主课程任务
+  let count = 0;
+  for (let i = startIdx; i < subCourse.lessons.length && count < dailyCount; i++) {
+    const lesson = subCourse.lessons[i];
+    if (!courseProgress[lesson.id]) {
+      tasks.push({
+        id: `course_${lesson.id}`,
+        text: `看网课：${subCourse.name}-${lesson.name}（${subCourse.teacher}）第${i + 1}节`,
+        duration: isShort ? 15 : 30,
+        subject: getSubjectFromModule(module.id),
+        completed: false,
+        courseLessonId: lesson.id,
+        isCourseTask: true
+      });
+      count++;
+    }
+  }
+  
+  // 穿插常识/政治理论（每天1节）
+  const interleaved = getInterleavedLessons(1);
+  interleaved.forEach(item => {
+    const lessonIdx = item.subCourse.lessons.findIndex(l => l.id === item.lesson.id);
+    tasks.push({
+      id: `course_${item.lesson.id}`,
+      text: `常识积累：${item.subCourse.name}-${item.lesson.name} 第${lessonIdx + 1}节`,
+      duration: 15,
+      subject: item.module.id === 'changshi' ? '常识' : '其他',
+      completed: false,
+      courseLessonId: item.lesson.id,
+      isCourseTask: true,
+      interleaved: true
+    });
+  });
+  
+  return tasks;
+}
+
+function getSubjectFromModule(moduleId) {
+  const map = {
+    'panduan': '判断',
+    'ziliao': '资料',
+    'shenlun': '申论',
+    'shuliang': '数量',
+    'changshi': '常识',
+    'yanyu': '言语',
+    'zhengzhi': '其他'
+  };
+  return map[moduleId] || '其他';
+}
+
+// 同步课程任务状态（当课程进度改变时，同步当日任务）
+function syncCourseTasksWithProgress() {
+  const dayKey = getDayKey(currentDayOffset);
+  const dayData = data.days[dayKey];
+  if (!dayData) return;
+  
+  let changed = false;
+  for (const section of Object.keys(dayData.tasks)) {
+    dayData.tasks[section].forEach(task => {
+      if (task.isCourseTask && task.courseLessonId) {
+        const shouldBeCompleted = !!courseProgress[task.courseLessonId];
+        if (task.completed !== shouldBeCompleted) {
+          task.completed = shouldBeCompleted;
+          changed = true;
+        }
+      }
+    });
+  }
+  
+  if (changed) {
+    saveData();
+    // 只更新任务和统计，不重新渲染整个页面（避免闪烁）
+    renderTasks(dayData);
+    updateStats(dayData);
+  }
+}
 
 // ==================== 分数追踪 ====================
 let trendChart = null;
@@ -2334,6 +4023,7 @@ window.addEventListener('resize', function() {
 });
 
 // ==================== 初始化 ====================
+loadCourseProgress();
 render();
 
 // ==================== PWA Service Worker 注册 ====================
