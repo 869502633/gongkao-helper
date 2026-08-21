@@ -1954,7 +1954,14 @@
   </div>
 </div>
 
-<script src="assets/echarts.min.js"></script>
+<!-- echarts库（如果文件不存在不影响页面运行） -->
+<script>
+  // 如果echarts库未加载，创建空对象防止报错
+  if (typeof echarts === 'undefined') {
+    window.echarts = null;
+  }
+</script>
+<script src="assets/echarts.min.js" onerror="window.echarts=null"></script>
 <script>
 // ==================== 数据模型 ====================
 const STORAGE_KEY = 'gongkao_dashboard_data';
@@ -3753,7 +3760,7 @@ function openProgressModal(section, taskId, event) {
   
   const dayKey = getDayKey(currentDayOffset);
   const dayData = ensureDayData(dayKey);
-  const task = dayData.tasks[section]?.find(t => t.id === taskId);
+  const task = (dayData.tasks[section] || []).find(t => t.id === taskId);
   if (!task) return;
   
   currentProgressTask = { section, taskId, dayKey };
@@ -3783,7 +3790,7 @@ function updateProgressLabel(val) {
   // 更新时长信息
   if (currentProgressTask) {
     const dayData = data.days[currentProgressTask.dayKey];
-    const task = dayData?.tasks[currentProgressTask.section]?.find(t => t.id === currentProgressTask.taskId);
+    const task = (dayData && dayData.tasks && dayData.tasks[currentProgressTask.section] || []).find(t => t.id === currentProgressTask.taskId);
     if (task) {
       const watchedMin = Math.round(task.duration * val / 100);
       const remainingMin = task.duration - watchedMin;
@@ -3807,7 +3814,7 @@ function saveProgress() {
   const dayData = data.days[dayKey];
   if (!dayData) return;
   
-  const task = dayData.tasks[section]?.find(t => t.id === taskId);
+  const task = (dayData.tasks[section] || []).find(t => t.id === taskId);
   if (!task) return;
   
   const progress = parseInt(document.getElementById('progressSlider').value);
@@ -3982,7 +3989,7 @@ function editTaskDuration(section, taskId, event) {
   
   const dayKey = getDayKey(currentDayOffset);
   const dayData = ensureDayData(dayKey);
-  const task = dayData.tasks[section]?.find(t => t.id === taskId);
+  const task = (dayData.tasks[section] || []).find(t => t.id === taskId);
   if (!task) return;
   
   const newDuration = prompt(`调整任务时长（当前：${task.duration}分钟）\n请输入新的时长（分钟）：`, task.duration);
@@ -4862,11 +4869,11 @@ function editTestRecord(id) {
   document.getElementById('testXingce').value = record.xingce || '';
   document.getElementById('testXingceTime').value = record.xingceTime || '';
   document.getElementById('testTotalQuestions').value = record.totalQuestions || '';
-  document.getElementById('modYuwen').value = record.modules?.yuwen || '';
-  document.getElementById('modPanduan').value = record.modules?.panduan || '';
-  document.getElementById('modZiliao').value = record.modules?.ziliao || '';
-  document.getElementById('modShuliang').value = record.modules?.shuliang || '';
-  document.getElementById('modChangshi').value = record.modules?.changshi || '';
+  document.getElementById('modYuwen').value = (record.modules && record.modules.yuwen) || '';
+  document.getElementById('modPanduan').value = (record.modules && record.modules.panduan) || '';
+  document.getElementById('modZiliao').value = (record.modules && record.modules.ziliao) || '';
+  document.getElementById('modShuliang').value = (record.modules && record.modules.shuliang) || '';
+  document.getElementById('modChangshi').value = (record.modules && record.modules.changshi) || '';
   document.getElementById('testShenlun').value = record.shenlun || '';
   document.getElementById('shenlunXiaoti').value = record.shenlunXiaoti || '';
   document.getElementById('shenlunZuowen').value = record.shenlunZuowen || '';
@@ -5050,8 +5057,9 @@ function renderTestList() {
 
 // 初始化趋势图
 function initTrendChart() {
-  const tests = ensureTestsData();
-  const container = document.getElementById('trendChart');
+  if (typeof echarts === 'undefined') return;
+  var tests = ensureTestsData();
+  var container = document.getElementById('trendChart');
   if (!container || container.offsetWidth === 0) return;
   
   if (!trendChart) {
@@ -5145,8 +5153,9 @@ function initTrendChart() {
 
 // 初始化雷达图
 function initRadarChart() {
-  const tests = ensureTestsData();
-  const container = document.getElementById('radarChart');
+  if (typeof echarts === 'undefined') return;
+  var tests = ensureTestsData();
+  var container = document.getElementById('radarChart');
   if (!container || container.offsetWidth === 0) return;
   
   if (!radarChart) {
@@ -5154,9 +5163,9 @@ function initRadarChart() {
   }
 
   // 取最近一次有模块数据的记录
-  const latestWithModules = [...tests].reverse().find(t => t.modules && Object.values(t.modules).some(v => v > 0));
+  var latestWithModules = [...tests].reverse().find(function(t) { return t.modules && Object.values(t.modules).some(function(v) { return v > 0; }); });
 
-  const modules = latestWithModules?.modules || { yuwen: 0, panduan: 0, ziliao: 0, shuliang: 0, changshi: 0 };
+  var modules = (latestWithModules && latestWithModules.modules) || { yuwen: 0, panduan: 0, ziliao: 0, shuliang: 0, changshi: 0 };
 
   const option = {
     animation: false,
