@@ -81,7 +81,6 @@
   }
   .header-info .info-item {
     background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 0.85rem;
@@ -2957,8 +2956,8 @@ function render() {
   renderScoreOverview();
   renderTestList();
   
-  // Course progress
-  renderCourseProgress();
+  // Course progress - 延迟渲染，避免初始化时阻塞主线程
+  setTimeout(function() { renderCourseProgress(); }, 100);
   
   // 一二布布伴学系统更新
   updateLevelBar();
@@ -4686,115 +4685,98 @@ function toggleModule(moduleId) {
 
 // 渲染课程进度
 function renderCourseProgress() {
-  const stats = getTotalCourseStats();
+  var stats = getTotalCourseStats();
   document.getElementById('courseTotalPercent').textContent = stats.percent + '%';
-  document.getElementById('courseTotalText').textContent = `已学 ${stats.completed} / ${stats.total} 节`;
+  document.getElementById('courseTotalText').textContent = '已学 ' + stats.completed + ' / ' + stats.total + ' 节';
   document.getElementById('courseTotalBar').style.width = stats.percent + '%';
   
-  const current = getCurrentSubCourse();
-  const currentScId = current ? current.subCourse.id : null;
+  var current = getCurrentSubCourse();
+  var currentScId = current ? current.subCourse.id : null;
   
-  const container = document.getElementById('courseModuleList');
-  let html = '';
+  var container = document.getElementById('courseModuleList');
+  var html = '';
   
-  COURSE_DATA.modules.forEach(mod => {
-    const modStats = getModuleStats(mod.id);
-    const modPercent = modStats.total > 0 ? Math.round((modStats.completed / modStats.total) * 100) : 0;
-    const isExpanded = courseUIState.expandedModules.includes(mod.id);
-    const hasCurrent = current && current.module.id === mod.id;
-    const isAllDone = modStats.completed === modStats.total && modStats.total > 0;
+  COURSE_DATA.modules.forEach(function(mod) {
+    var modStats = getModuleStats(mod.id);
+    var modPercent = modStats.total > 0 ? Math.round((modStats.completed / modStats.total) * 100) : 0;
+    var isExpanded = courseUIState.expandedModules.indexOf(mod.id) !== -1;
+    var hasCurrent = current && current.module.id === mod.id;
+    var isAllDone = modStats.completed === modStats.total && modStats.total > 0;
     
-    // 获取模块主教师
-    let mainTeacher = '';
+    var mainTeacher = '';
     if (mod.subCourses.length === 1) {
       mainTeacher = mod.subCourses[0].teacher;
     } else {
-      const teachers = [...new Set(mod.subCourses.map(s => s.teacher))].filter(t => t !== '常识专项' && t !== '时政专项');
+      var teacherSet = {};
+      mod.subCourses.forEach(function(s) { if (s.teacher && s.teacher !== '常识专项' && s.teacher !== '时政专项') teacherSet[s.teacher] = true; });
+      var teachers = Object.keys(teacherSet);
       mainTeacher = teachers.slice(0, 2).join('、');
     }
     
-    html += `
-      <div class="course-module ${isExpanded ? 'expanded' : ''} ${hasCurrent ? 'current' : ''}">
-        <div class="course-module-header" onclick="toggleModule('${mod.id}')">
-          <span class="course-module-arrow">▶</span>
-          <div class="course-module-info">
-            <div class="course-module-name">
-              <span>${mod.icon} ${mod.name}</span>
-              <span class="course-module-teacher">${mainTeacher}</span>
-              ${isAllDone ? '<span class="completed-badge">已完成</span>' : ''}
-              ${hasCurrent ? '<span class="current-badge">学习中</span>' : ''}
-            </div>
-            <div class="course-module-progress">
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${modPercent}%"></div>
-              </div>
-              <div class="course-module-progress-text">
-                <span>${modStats.completed}/${modStats.total} 节</span>
-                <span>${modPercent}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="course-module-body">
-    `;
+    html += '<div class="course-module ' + (isExpanded ? 'expanded' : '') + ' ' + (hasCurrent ? 'current' : '') + '">';
+    html += '<div class="course-module-header" onclick="toggleModule(\'' + mod.id + '\')">';
+    html += '<span class="course-module-arrow">▶</span>';
+    html += '<div class="course-module-info">';
+    html += '<div class="course-module-name">';
+    html += '<span>' + mod.icon + ' ' + mod.name + '</span>';
+    html += '<span class="course-module-teacher">' + mainTeacher + '</span>';
+    if (isAllDone) html += '<span class="completed-badge">已完成</span>';
+    if (hasCurrent) html += '<span class="current-badge">学习中</span>';
+    html += '</div>';
+    html += '<div class="course-module-progress">';
+    html += '<div class="progress-bar"><div class="progress-fill" style="width:' + modPercent + '%"></div></div>';
+    html += '<div class="course-module-progress-text"><span>' + modStats.completed + '/' + modStats.total + ' 节</span><span>' + modPercent + '%</span></div>';
+    html += '</div></div></div>';
     
-    // 渲染子课程
-    mod.subCourses.forEach(sc => {
-      const scStats = getSubCourseStats(sc);
-      const scPercent = scStats.total > 0 ? Math.round((scStats.completed / scStats.total) * 100) : 0;
-      const isScCurrent = currentScId === sc.id;
-      const isScDone = sc.allCompleted || (scStats.completed === scStats.total && scStats.total > 0);
-      
-      // 找当前节次
-      let currentLessonIdx = -1;
-      if (!sc.allCompleted) {
-        for (let i = 0; i < sc.lessons.length; i++) {
-          if (!courseProgress[sc.lessons[i].id]) {
-            currentLessonIdx = i;
-            break;
+    html += '<div class="course-module-body">';
+    
+    // 只在展开时渲染子课程详情，折叠时只显示摘要
+    if (isExpanded) {
+      mod.subCourses.forEach(function(sc) {
+        var scStats = getSubCourseStats(sc);
+        var scPercent = scStats.total > 0 ? Math.round((scStats.completed / scStats.total) * 100) : 0;
+        var isScCurrent = currentScId === sc.id;
+        var isScDone = sc.allCompleted || (scStats.completed === scStats.total && scStats.total > 0);
+        
+        var currentLessonIdx = -1;
+        if (!sc.allCompleted) {
+          for (var i = 0; i < sc.lessons.length; i++) {
+            if (!courseProgress[sc.lessons[i].id]) { currentLessonIdx = i; break; }
           }
         }
-      }
-      
-      html += `
-        <div class="course-subgroup">
-          <div class="course-subgroup-title">
-            <span>${sc.name} ${isScCurrent ? '<span class="current-badge">当前</span>' : ''} ${isScDone ? '<span class="completed-badge">✓</span>' : ''}</span>
-            <span class="subgroup-teacher">
-              ${sc.teacher} · ${scStats.completed}/${scStats.total}
-              <span class="duration-badge" onclick="openDurationModal('${sc.id}'); event.stopPropagation();" title="点击调整课程时长">⏱ ${getSubCourseDuration(sc)}分钟</span>
-            </span>
-          </div>
-      `;
-      
-      if (sc.allCompleted || sc.lessons.length === 0) {
-        html += `<div class="course-empty">✓ 全部完成</div>`;
-      } else {
-        html += `<div class="lesson-list">`;
-        sc.lessons.forEach((lesson, idx) => {
-          const isCompleted = courseProgress[lesson.id];
-          const isCurrent = isScCurrent && idx === currentLessonIdx;
-          const lessonDur = getLessonDuration(lesson, sc);
-          html += `
-            <div class="lesson-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current-lesson' : ''}" 
-                 onclick="toggleLesson('${lesson.id}'); event.stopPropagation();">
-              <div class="lesson-checkbox"></div>
-              <span class="lesson-index">${idx + 1}.</span>
-              <span class="lesson-name">${lesson.name}</span>
-              <span class="lesson-duration-btn" onclick="openLessonDurationModal('${lesson.id}'); event.stopPropagation();" title="调整本节课时长">⏱ ${lessonDur}分</span>
-            </div>
-          `;
-        });
-        html += `</div>`;
-      }
-      
-      html += `</div>`;
-    });
+        
+        html += '<div class="course-subgroup">';
+        html += '<div class="course-subgroup-title">';
+        html += '<span>' + sc.name + (isScCurrent ? ' <span class="current-badge">当前</span>' : '') + (isScDone ? ' <span class="completed-badge">✓</span>' : '') + '</span>';
+        html += '<span class="subgroup-teacher">' + sc.teacher + ' · ' + scStats.completed + '/' + scStats.total;
+        html += ' <span class="duration-badge" onclick="openDurationModal(\'' + sc.id + '\'); event.stopPropagation();" title="点击调整课程时长">⏱ ' + getSubCourseDuration(sc) + '分钟</span>';
+        html += '</span></div>';
+        
+        if (sc.allCompleted || sc.lessons.length === 0) {
+          html += '<div class="course-empty">✓ 全部完成</div>';
+        } else {
+          html += '<div class="lesson-list">';
+          sc.lessons.forEach(function(lesson, idx) {
+            var isCompleted = courseProgress[lesson.id];
+            var isCurrentLesson = isScCurrent && idx === currentLessonIdx;
+            var lessonDur = getLessonDuration(lesson, sc);
+            html += '<div class="lesson-item ' + (isCompleted ? 'completed' : '') + ' ' + (isCurrentLesson ? 'current-lesson' : '') + '" onclick="toggleLesson(\'' + lesson.id + '\'); event.stopPropagation();">';
+            html += '<div class="lesson-checkbox"></div>';
+            html += '<span class="lesson-index">' + (idx + 1) + '.</span>';
+            html += '<span class="lesson-name">' + lesson.name + '</span>';
+            html += '<span class="lesson-duration-btn" onclick="openLessonDurationModal(\'' + lesson.id + '\'); event.stopPropagation();" title="调整本节课时长">⏱ ' + lessonDur + '分</span>';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+    } else {
+      // 折叠时只显示简要信息
+      html += '<div style="padding:8px 12px;color:var(--muted);font-size:0.85rem;">点击展开查看 ' + mod.subCourses.length + ' 个子课程详情</div>';
+    }
     
-    html += `
-        </div>
-      </div>
-    `;
+    html += '</div></div>';
   });
   
   container.innerHTML = html;
