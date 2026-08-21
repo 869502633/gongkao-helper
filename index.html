@@ -5198,7 +5198,7 @@ function renderTestList() {
 
 // 初始化趋势图
 function initTrendChart() {
-  if (typeof echarts === 'undefined') return;
+  if (!echarts) return;
   var tests = ensureTestsData();
   var container = document.getElementById('trendChart');
   if (!container || container.offsetWidth === 0) return;
@@ -5294,7 +5294,7 @@ function initTrendChart() {
 
 // 初始化雷达图
 function initRadarChart() {
-  if (typeof echarts === 'undefined') return;
+  if (!echarts) return;
   var tests = ensureTestsData();
   var container = document.getElementById('radarChart');
   if (!container || container.offsetWidth === 0) return;
