@@ -2037,12 +2037,12 @@ function showDateSwitchToast() {
 setInterval(checkAutoDateSwitch, 30000);
 
 function loadData() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
       return JSON.parse(saved);
-    } catch(e) {}
-  }
+    }
+  } catch(e) {}
   // 初始化
   return {
     days: {}, // dayKey: { tasks: {...}, wrongs: [], completed: 0 }
@@ -2056,7 +2056,11 @@ function loadData() {
 }
 
 function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e) {
+    console.warn('保存失败，可能是隐私浏览模式');
+  }
 }
 
 function getDayKey(offset) {
@@ -3898,7 +3902,9 @@ function loadCourseDurations() {
 
 // 保存课程时长配置
 function saveCourseDurations() {
-  localStorage.setItem(COURSE_DURATION_KEY, JSON.stringify(courseDurations));
+  try {
+    localStorage.setItem(COURSE_DURATION_KEY, JSON.stringify(courseDurations));
+  } catch(e) {}
 }
 
 // 获取子课程的默认时长（分钟）
@@ -4380,12 +4386,16 @@ function loadCourseProgress() {
 
 // 保存课程进度
 function saveCourseProgress() {
-  localStorage.setItem(COURSE_STORAGE_KEY, JSON.stringify(courseProgress));
+  try {
+    localStorage.setItem(COURSE_STORAGE_KEY, JSON.stringify(courseProgress));
+  } catch(e) {}
 }
 
 // 保存UI状态
 function saveCourseUI() {
-  localStorage.setItem(COURSE_UI_KEY, JSON.stringify(courseUIState));
+  try {
+    localStorage.setItem(COURSE_UI_KEY, JSON.stringify(courseUIState));
+  } catch(e) {}
 }
 
 // 获取模块的总节数和已学节数
@@ -5242,8 +5252,10 @@ function loadBearCoins() {
 }
 
 function saveBearCoins() {
-  localStorage.setItem(BEAR_COIN_KEY, String(bearCoins));
-  localStorage.setItem(BEAR_COIN_LOG_KEY, JSON.stringify(bearCoinLog));
+  try {
+    localStorage.setItem(BEAR_COIN_KEY, String(bearCoins));
+    localStorage.setItem(BEAR_COIN_LOG_KEY, JSON.stringify(bearCoinLog));
+  } catch(e) {}
 }
 
 function getBearLevel() {
@@ -5464,11 +5476,32 @@ function toggleCompanionMessage() {
 }
 
 // ==================== 初始化 ====================
-loadCourseProgress();
-loadCourseDurations();
-loadBearCoins();
-updateLevelBar();
-render();
+// 全局错误捕获，防止Safari隐私模式等导致页面白屏
+window.addEventListener('error', function(e) {
+  console.warn('页面错误:', e.message);
+  // 尝试显示错误提示而不是白屏
+  var body = document.querySelector('main');
+  if (body && body.innerHTML === '') {
+    body.innerHTML = '<div style="padding:20px;text-align:center;color:#666;"><p>页面加载遇到问题，请尝试：</p><p>1. 关闭Safari的隐私浏览模式</p><p>2. 清除Safari缓存（设置→Safari→清除历史记录）</p><p>3. 用Chrome浏览器打开</p></div>';
+  }
+});
+
+try {
+  loadCourseProgress();
+  loadCourseDurations();
+  loadBearCoins();
+  updateLevelBar();
+  render();
+} catch(e) {
+  console.warn('初始化错误:', e.message);
+  // 即使出错也尝试渲染
+  try {
+    data = loadData();
+    render();
+  } catch(e2) {
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#666;font-family:sans-serif;"><h2>页面加载失败</h2><p>请尝试：</p><p>1. 关闭Safari的隐私浏览模式后重新打开</p><p>2. 清除Safari缓存（设置→Safari→清除历史记录与网站数据）</p><p>3. 用Chrome浏览器打开此页面</p></div>';
+  }
+}
 
 // ==================== PWA Service Worker 注册 ====================
 if ('serviceWorker' in navigator) {
