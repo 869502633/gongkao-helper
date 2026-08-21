@@ -1,29 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#1a365d">
 <meta name="description" content="山东省公务员考试每日学习计划、错题记录、分数追踪">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="考公助手">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="考公助手">
 <meta name="format-detection" content="telephone=no">
 
-<!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
-
-<!-- Apple Touch Icons -->
-<link rel="apple-touch-icon" href="icons/icon-152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png">
-
-<!-- Favicon -->
-<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-48.png">
-<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-
-<!-- iOS启动画面 -->
-<meta name="apple-touch-startup-image" content="icons/icon-512.png">
+<!-- Favicon（内联base64，避免404） -->
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🐻&lt;/text&gt;&lt;/svg&gt;">
+<link rel="apple-touch-icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🐻&lt;/text&gt;&lt;/svg&gt;">
 
 <title>山东省考备考工作台 | 每日学习计划</title>
 <style>
@@ -1444,6 +1434,14 @@
 </head>
 <body>
 
+<!-- 无JS提示 -->
+<noscript>
+  <div style="padding:40px;text-align:center;font-family:sans-serif;">
+    <h2>📚 山东省考备考工作台</h2>
+    <p>请开启 JavaScript 后使用本应用</p>
+  </div>
+</noscript>
+
 <!-- Header -->
 <header class="header">
   <div class="header-inner">
@@ -2018,14 +2016,10 @@
   </div>
 </div>
 
-<!-- echarts库（如果文件不存在不影响页面运行） -->
+<!-- echarts 图表库（未引入，图表功能自动禁用） -->
 <script>
-  // 如果echarts库未加载，创建空对象防止报错
-  if (typeof echarts === 'undefined') {
-    window.echarts = null;
-  }
+  window.echarts = null;
 </script>
-<script src="assets/echarts.min.js" onerror="window.echarts=null"></script>
 <script>
 // ==================== 数据模型 ====================
 const STORAGE_KEY = 'gongkao_dashboard_data';
@@ -5680,19 +5674,6 @@ try {
   } catch(e2) {
     document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#666;font-family:sans-serif;"><h2>页面加载失败</h2><p>请尝试：</p><p>1. 关闭Safari的隐私浏览模式后重新打开</p><p>2. 清除Safari缓存（设置→Safari→清除历史记录与网站数据）</p><p>3. 用Chrome浏览器打开此页面</p></div>';
   }
-}
-
-// ==================== PWA Service Worker 注册 ====================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js')
-      .then(function(registration) {
-        console.log('PWA: ServiceWorker 注册成功，范围：', registration.scope);
-      })
-      .catch(function(err) {
-        console.log('PWA: ServiceWorker 注册失败：', err);
-      });
-  });
 }
 
 // 安装提示（Android Chrome）
