@@ -11,9 +11,12 @@
 <meta name="application-name" content="考公助手">
 <meta name="format-detection" content="telephone=no">
 
-<!-- Favicon（内联base64，避免404） -->
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Favicon（内联SVG，避免404） -->
 <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🐻&lt;/text&gt;&lt;/svg&gt;">
-<link rel="apple-touch-icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🐻&lt;/text&gt;&lt;/svg&gt;">
+<link rel="apple-touch-icon" href="icon.svg">
 
 <title>山东省考备考工作台 | 每日学习计划</title>
 <style>
@@ -1433,6 +1436,17 @@
 </head>
 <body>
 
+<!-- 启动加载屏（立即显示，JS加载完成后隐藏） -->
+<div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#1a365d 0%,#2c5282 50%,#2b6cb0 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:white;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;">
+  <div style="font-size:60px;margin-bottom:16px;">🐻</div>
+  <div style="font-size:20px;font-weight:600;margin-bottom:8px;">考公助手</div>
+  <div style="font-size:13px;opacity:0.7;margin-bottom:24px;">每日学习计划 · 一二布布陪你备考</div>
+  <div style="width:120px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;overflow:hidden;">
+    <div id="splashProgress" style="height:100%;background:white;width:0%;border-radius:2px;transition:width 0.3s ease;"></div>
+  </div>
+  <div id="splashText" style="font-size:12px;opacity:0.6;margin-top:12px;">加载中...</div>
+</div>
+
 <!-- 无JS提示 -->
 <noscript>
   <div style="padding:40px;text-align:center;font-family:sans-serif;">
@@ -2121,9 +2135,18 @@ function loadData() {
 
 function saveData() {
   try {
+    // 数据保护：只保留最近60天的数据，防止数据过多导致手机卡顿
+    var allKeys = Object.keys(data.days);
+    if (allKeys.length > 60) {
+      allKeys.sort();
+      var deleteCount = allKeys.length - 60;
+      for (var di = 0; di < deleteCount; di++) {
+        delete data.days[allKeys[di]];
+      }
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch(e) {
-    console.warn('保存失败，可能是隐私浏览模式');
+    console.warn('保存失败，可能是隐私浏览模式或存储空间不足');
   }
 }
 
@@ -2911,11 +2934,11 @@ function generateDayTasks(dayNum, skipLessonIds) {
 
 // ==================== 渲染 ====================
 function render() {
-  const dayKey = getDayKey(currentDayOffset);
-  const dayNum = getDayNumber(currentDayOffset);
-  const phaseInfo = getPhase(dayNum);
-  const dayData = ensureDayData(dayKey);
-  const weekend = isWeekend(currentDayOffset);
+  var dayKey = getDayKey(currentDayOffset);
+  var dayNum = getDayNumber(currentDayOffset);
+  var phaseInfo = getPhase(dayNum);
+  var dayData = ensureDayData(dayKey);
+  var weekend = isWeekend(currentDayOffset);
   
   // 扣币提示（新一天生成时如有未完成任务则显示）
   if (window._penaltyCount && window._penaltyCount > 0) {
@@ -2924,60 +2947,47 @@ function render() {
     setTimeout(function() { showPenaltyPopup(penaltyCount); }, 500);
   }
 
-  // Header
-  document.getElementById('currentDayDisplay').textContent = `第 ${dayNum} 天`;
+  // Header（核心信息，优先渲染）
+  document.getElementById('currentDayDisplay').textContent = '第 ' + dayNum + ' 天';
   document.getElementById('todayDate').textContent = dayKey;
   document.getElementById('currentPhase').textContent = phaseInfo.name;
   document.getElementById('dayType').textContent = weekend ? '周末' : '工作日';
 
   // Phase progress
-  const phasePercent = Math.round((phaseInfo.dayInPhase / phaseInfo.totalDays) * 100);
+  var phasePercent = Math.round((phaseInfo.dayInPhase / phaseInfo.totalDays) * 100);
   document.getElementById('phaseProgress').style.width = phasePercent + '%';
-  document.getElementById('phasePercent').textContent = `${phaseInfo.dayInPhase}/${phaseInfo.totalDays} 天`;
+  document.getElementById('phasePercent').textContent = phaseInfo.dayInPhase + '/' + phaseInfo.totalDays + ' 天';
   
   // Update phase steps
-  const steps = document.querySelectorAll('.phase-step');
-  steps.forEach((step, i) => {
-    step.classList.remove('active', 'done');
-    if (i + 1 < phaseInfo.phase) step.classList.add('done');
-    else if (i + 1 === phaseInfo.phase) step.classList.add('active');
-  });
+  var steps = document.querySelectorAll('.phase-step');
+  for (var si = 0; si < steps.length; si++) {
+    steps[si].classList.remove('active', 'done');
+    if (si + 1 < phaseInfo.phase) steps[si].classList.add('done');
+    else if (si + 1 === phaseInfo.phase) steps[si].classList.add('active');
+  }
 
-  // Tasks
+  // Tasks（最核心，优先渲染）
   renderTasks(dayData);
 
   // Stats
   updateStats(dayData);
 
-  // Wrongs
-  renderWrongs(dayData);
-
-  // Score tracking
-  renderScoreOverview();
-  renderTestList();
-  
-  // Course progress - 延迟渲染，避免初始化时阻塞主线程
-  setTimeout(function() { renderCourseProgress(); }, 100);
-  
-  // 一二布布伴学系统更新
-  updateLevelBar();
-  updateCompanionMessage();
-  
-  // 初始化图表（如果当前标签页可见）
-  // 延迟到下一帧，确保DOM布局完成，容器有宽度
-  if (typeof requestAnimationFrame !== 'undefined') {
-    requestAnimationFrame(function() {
-      setTimeout(() => {
-        if (currentTab === 'trend') initTrendChart();
-        if (currentTab === 'radar') initRadarChart();
-      }, 50);
-    });
-  } else {
-    setTimeout(() => {
-      if (currentTab === 'trend') initTrendChart();
-      if (currentTab === 'radar') initRadarChart();
-    }, 200);
-  }
+  // 其他内容延迟渲染，让页面先显示出来
+  setTimeout(function() {
+    // Wrongs
+    renderWrongs(dayData);
+    // Score tracking
+    renderScoreOverview();
+    renderTestList();
+    // Course progress
+    renderCourseProgress();
+    // 一二布布伴学系统更新
+    updateLevelBar();
+    updateCompanionMessage();
+    // 图表
+    if (currentTab === 'trend') initTrendChart();
+    if (currentTab === 'radar') initRadarChart();
+  }, 50);
 }
 
 function renderTasks(dayData) {
@@ -5639,22 +5649,58 @@ window.addEventListener('error', function(e) {
   }
 });
 
+// 更新启动屏进度
+function updateSplash(percent, text) {
+  try {
+    var bar = document.getElementById('splashProgress');
+    var txt = document.getElementById('splashText');
+    if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+    if (txt && text) txt.textContent = text;
+  } catch(e) {}
+}
+
+// 隐藏启动屏
+function hideSplash() {
+  try {
+    var splash = document.getElementById('splashScreen');
+    if (splash) {
+      splash.style.transition = 'opacity 0.3s ease';
+      splash.style.opacity = '0';
+      setTimeout(function() {
+        if (splash.parentNode) splash.parentNode.removeChild(splash);
+      }, 300);
+    }
+  } catch(e) {}
+}
+
 try {
+  updateSplash(10, '正在加载数据...');
   loadCourseProgress();
+  updateSplash(25, '加载课程配置...');
   loadCourseDurations();
   loadLessonDurations();
+  updateSplash(40, '加载学习进度...');
   loadLessonWatchProgress();
   loadBearCoins();
+  updateSplash(60, '准备今日任务...');
   updateLevelBar();
+  updateSplash(80, '渲染页面...');
   render();
+  updateSplash(100, '加载完成！');
+  setTimeout(hideSplash, 200);
 } catch(e) {
   console.warn('初始化错误:', e.message);
+  // 隐藏启动屏，显示错误
+  try {
+    var splash = document.getElementById('splashScreen');
+    if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+  } catch(eh) {}
   // 即使出错也尝试渲染
   try {
     data = loadData();
     render();
   } catch(e2) {
-    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#666;font-family:sans-serif;"><h2>页面加载失败</h2><p>请尝试：</p><p>1. 关闭Safari的隐私浏览模式后重新打开</p><p>2. 清除Safari缓存（设置→Safari→清除历史记录与网站数据）</p><p>3. 用Chrome浏览器打开此页面</p></div>';
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#666;font-family:sans-serif;"><h2>页面加载失败</h2><p>错误信息：' + e2.message + '</p><p>请尝试：</p><p>1. 关闭Safari的隐私浏览模式后重新打开</p><p>2. 清除Safari缓存（设置→Safari→清除历史记录与网站数据）</p><p>3. 用Chrome浏览器打开此页面</p></div>';
   }
 }
 
@@ -5665,6 +5711,19 @@ window.addEventListener('beforeinstallprompt', function(e) {
   deferredPrompt = e;
   console.log('PWA: 可以添加到主屏幕了');
 });
+
+// ==================== PWA Service Worker 注册 ====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js')
+      .then(function(registration) {
+        console.log('PWA: ServiceWorker 注册成功');
+      })
+      .catch(function(err) {
+        console.log('PWA: ServiceWorker 注册失败（不影响使用）:', err.message);
+      });
+  });
+}
 </script>
 
 <!-- 日期切换提示 -->
