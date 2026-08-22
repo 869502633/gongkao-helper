@@ -1709,6 +1709,7 @@
         <div class="action-bar">
           <button class="btn btn-secondary btn-sm" onclick="markAllComplete()">全部完成</button>
           <button class="btn btn-secondary btn-sm" onclick="resetDaily()">重置今日</button>
+          <button class="btn btn-secondary btn-sm" onclick="refreshTodayTasks()">🔄 刷新任务</button>
         </div>
         <div class="action-bar">
           <button class="btn btn-secondary btn-sm" onclick="exportData()">导出数据</button>
@@ -1731,6 +1732,28 @@
       <button class="modal-close" onclick="closeAddTaskModal()">×</button>
     </div>
     <div class="modal-body">
+      <div class="form-group">
+        <label>任务类型</label>
+        <select id="newTaskType" onchange="onTaskTypeChange()">
+          <option value="custom">✏️ 自定义任务</option>
+          <option value="video">📺 观看网课</option>
+          <option value="exercise">📝 做练习题</option>
+          <option value="reading">📖 阅读积累</option>
+          <option value="review">🔄 复习回顾</option>
+        </select>
+      </div>
+      <div class="form-group" id="videoLessonGroup" style="display:none;">
+        <label>选择课程</label>
+        <select id="newTaskLesson" onchange="onLessonSelect()">
+          <option value="">-- 请选择 --</option>
+        </select>
+      </div>
+      <div class="form-group" id="presetGroup" style="display:none;">
+        <label>选择内容</label>
+        <select id="newTaskPreset" onchange="onPresetSelect()">
+          <option value="">-- 请选择 --</option>
+        </select>
+      </div>
       <div class="form-group">
         <label>任务内容</label>
         <input type="text" id="newTaskText" placeholder="例如：定义判断基础练习20题">
@@ -3108,14 +3131,14 @@ function updateStats(dayData) {
       totalTasks++;
       totalMinutes += task.duration;
       
-      // 按进度比例计算完成时长
+      // 按当天实际完成情况计算时长（只统计当天的，不含之前累计）
+      const dailyWatched = getTaskDailyWatchedDuration(task);
       const progress = getTaskProgress(task);
       if (progress >= 100) {
         completedTasks++;
-        completedMinutes += task.duration;
-      } else if (progress > 0) {
-        // 部分完成：按进度比例计入已完成时长
-        completedMinutes += getTaskWatchedDuration(task);
+      }
+      if (dailyWatched > 0) {
+        completedMinutes += dailyWatched;
       }
     });
   }
@@ -3129,11 +3152,62 @@ function updateStats(dayData) {
   document.getElementById('dailyProgress').style.width = percent + '%';
   document.getElementById('progressPercent').textContent = percent + '%';
 
-  // Weekly stats (simplified)
-  document.getElementById('weekDays').textContent = Math.min(Math.ceil(getDayNumber(currentDayOffset) / 7 * 7), 7);
-  document.getElementById('weekHours').textContent = Math.round(completedMinutes / 60 * 10) / 10;
-  document.getElementById('weekTasks').textContent = completedTasks;
-  document.getElementById('weekWrongs').textContent = dayData.wrongs.length;
+  // 本周统计：计算本周（周一到周日）的累计数据
+  var weekStats = calculateWeekStats();
+  document.getElementById('weekDays').textContent = weekStats.studyDays;
+  document.getElementById('weekHours').textContent = weekStats.totalHours;
+  document.getElementById('weekTasks').textContent = weekStats.completedTasks;
+  document.getElementById('weekWrongs').textContent = weekStats.totalWrongs;
+}
+
+// 计算本周统计数据（周一到周日）
+function calculateWeekStats() {
+  var today = new Date();
+  // 获取本周一的日期
+  var dayOfWeek = today.getDay(); // 0=周日, 1=周一, ..., 6=周六
+  var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  var monday = new Date(today);
+  monday.setDate(today.getDate() + mondayOffset);
+  monday.setHours(0, 0, 0, 0);
+  
+  var totalMinutes = 0;
+  var completedTasks = 0;
+  var totalWrongs = 0;
+  var studyDays = 0;
+  
+  // 遍历本周7天
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    var dayKey = formatDateKey(d);
+    var dayData = data.days[dayKey];
+    
+    if (dayData && dayData.tasks) {
+      var dayHasStudy = false;
+      for (var section in dayData.tasks) {
+        dayData.tasks[section].forEach(function(task) {
+          var daily = getTaskDailyWatchedDuration(task);
+          if (daily > 0) {
+            totalMinutes += daily;
+            dayHasStudy = true;
+          }
+          if (task.completed) {
+            completedTasks++;
+            dayHasStudy = true;
+          }
+        });
+      }
+      if (dayHasStudy) studyDays++;
+      if (dayData.wrongs) totalWrongs += dayData.wrongs.length;
+    }
+  }
+  
+  return {
+    studyDays: studyDays,
+    totalHours: Math.round(totalMinutes / 60 * 10) / 10,
+    completedTasks: completedTasks,
+    totalWrongs: totalWrongs
+  };
 }
 
 function renderWrongs(dayData) {
@@ -3275,6 +3349,7 @@ function addTask() {
   const subject = document.getElementById('newTaskSubject').value;
   const duration = parseInt(document.getElementById('newTaskDuration').value) || 25;
   const section = document.getElementById('newTaskSection').value;
+  const taskType = document.getElementById('newTaskType').value;
 
   if (!text) {
     alert('请输入任务内容');
@@ -3283,16 +3358,30 @@ function addTask() {
 
   const dayKey = getDayKey(currentDayOffset);
   const dayData = ensureDayData(dayKey);
-  const newTask = {
+  
+  var newTask = {
     id: 'custom_' + Date.now(),
-    text,
-    duration,
+    text: text,
+    duration: duration,
     period: section,
-    type: 'other',
-    subject,
+    type: taskType === 'custom' ? 'other' : taskType,
+    subject: subject,
     completed: false,
     custom: true
   };
+  
+  // 如果是网课类型，关联课程ID以支持进度追踪
+  if (taskType === 'video') {
+    var lessonVal = document.getElementById('newTaskLesson').value;
+    if (lessonVal) {
+      var parts = lessonVal.split('|');
+      var lessonId = parts[0];
+      newTask.isCourseTask = true;
+      newTask.courseLessonId = lessonId;
+      newTask.videoId = lessonId;
+      newTask.type = 'video';
+    }
+  }
 
   // 确保目标时段存在
   if (!dayData.tasks[section]) {
@@ -3306,12 +3395,164 @@ function addTask() {
 
 function openAddTaskModal() {
   document.getElementById('addTaskModal').classList.add('show');
+  document.getElementById('newTaskType').value = 'custom';
   document.getElementById('newTaskText').value = '';
   document.getElementById('newTaskDuration').value = 25;
+  document.getElementById('newTaskSubject').value = '判断';
+  document.getElementById('videoLessonGroup').style.display = 'none';
+  document.getElementById('presetGroup').style.display = 'none';
+  // 初始化课程列表
+  populateLessonDropdown();
 }
 
 function closeAddTaskModal() {
   document.getElementById('addTaskModal').classList.remove('show');
+}
+
+// 任务类型切换
+function onTaskTypeChange() {
+  var type = document.getElementById('newTaskType').value;
+  var videoGroup = document.getElementById('videoLessonGroup');
+  var presetGroup = document.getElementById('presetGroup');
+  var textInput = document.getElementById('newTaskText');
+  
+  if (type === 'video') {
+    videoGroup.style.display = 'block';
+    presetGroup.style.display = 'none';
+    populateLessonDropdown();
+  } else if (type === 'exercise' || type === 'reading' || type === 'review') {
+    videoGroup.style.display = 'none';
+    presetGroup.style.display = 'block';
+    populatePresetDropdown(type);
+  } else {
+    videoGroup.style.display = 'none';
+    presetGroup.style.display = 'none';
+    textInput.value = '';
+  }
+}
+
+// 填充网课课程下拉列表
+function populateLessonDropdown() {
+  var select = document.getElementById('newTaskLesson');
+  select.innerHTML = '<option value="">-- 请选择 --</option>';
+  
+  // 模块ID对应科目名称
+  var subjectMap = {
+    'panduan': '判断',
+    'yanyu': '言语',
+    'ziliao': '资料',
+    'shuliang': '数量',
+    'changshi': '常识',
+    'shenlun': '申论',
+    'zhengzhi': '常识'
+  };
+  
+  COURSE_DATA.modules.forEach(function(mod) {
+    var groupLabel = document.createElement('optgroup');
+    groupLabel.label = mod.name;
+    var subject = subjectMap[mod.id] || '其他';
+    
+    mod.subCourses.forEach(function(sc) {
+      if (!sc.lessons || sc.lessons.length === 0) return;
+      sc.lessons.forEach(function(lesson) {
+        // 跳过已完成的课程
+        if (!courseProgress[lesson.id]) {
+          var opt = document.createElement('option');
+          var fullDur = getLessonDuration(lesson, sc);
+          opt.value = lesson.id + '|' + sc.id + '|' + subject + '|' + fullDur;
+          opt.textContent = sc.name + ' - ' + lesson.name + '（' + fullDur + '分钟）';
+          groupLabel.appendChild(opt);
+        }
+      });
+    });
+    
+    if (groupLabel.children.length > 0) {
+      select.appendChild(groupLabel);
+    }
+  });
+}
+
+// 选择网课后自动填充内容
+function onLessonSelect() {
+  var val = document.getElementById('newTaskLesson').value;
+  if (!val) return;
+  
+  var parts = val.split('|');
+  var lessonId = parts[0];
+  var subCourseId = parts[1];
+  var subject = parts[2];
+  var duration = parseInt(parts[3]) || 30;
+  
+  var subCourse = findSubCourseById(subCourseId);
+  var lesson = findLessonById(lessonId);
+  
+  if (subCourse && lesson) {
+    document.getElementById('newTaskText').value = '网课：' + subCourse.name + '-' + lesson.name + '（' + subCourse.teacher + '）';
+    document.getElementById('newTaskDuration').value = duration;
+    document.getElementById('newTaskSubject').value = subject;
+  }
+}
+
+// 预设选项数据
+var presetOptions = {
+  exercise: [
+    { text: '图形推理专项练习20题', subject: '判断', duration: 25 },
+    { text: '类比推理专项练习20题', subject: '判断', duration: 15 },
+    { text: '定义判断专项练习15题', subject: '判断', duration: 25 },
+    { text: '逻辑判断专项练习15题', subject: '判断', duration: 30 },
+    { text: '资料分析套题练习（4篇）', subject: '资料', duration: 35 },
+    { text: '资料分析速算练习', subject: '资料', duration: 20 },
+    { text: '数量关系专项练习10题', subject: '数量', duration: 30 },
+    { text: '言语理解选词填空20题', subject: '言语', duration: 20 },
+    { text: '言语理解片段阅读15题', subject: '言语', duration: 25 },
+    { text: '常识判断刷题30题', subject: '常识', duration: 20 },
+    { text: '申论归纳概括练习1题', subject: '申论', duration: 30 },
+    { text: '申论大作文写作练习', subject: '申论', duration: 60 }
+  ],
+  reading: [
+    { text: '成语积累：背诵20组高频易错成语', subject: '言语', duration: 15 },
+    { text: '申论范文精读1篇（读+划重点+摘抄）', subject: '申论', duration: 20 },
+    { text: '人民日报评论文章精读', subject: '申论', duration: 20 },
+    { text: '半月谈时政热点学习', subject: '常识', duration: 15 },
+    { text: '常识知识点积累', subject: '常识', duration: 20 },
+    { text: '逻辑填空高频词语积累', subject: '言语', duration: 15 }
+  ],
+  review: [
+    { text: '昨日知识点回顾', subject: '其他', duration: 10 },
+    { text: '错题本复习重做', subject: '其他', duration: 20 },
+    { text: '本周知识点梳理总结', subject: '其他', duration: 30 },
+    { text: '思维导图整理', subject: '其他', duration: 25 },
+    { text: '错题分析：整理错题原因', subject: '其他', duration: 15 }
+  ]
+};
+
+// 填充预设下拉列表
+function populatePresetDropdown(type) {
+  var select = document.getElementById('newTaskPreset');
+  select.innerHTML = '<option value="">-- 请选择 --</option>';
+  
+  var options = presetOptions[type] || [];
+  options.forEach(function(opt, idx) {
+    var option = document.createElement('option');
+    option.value = idx;
+    option.textContent = opt.text + '（' + opt.duration + '分钟）';
+    select.appendChild(option);
+  });
+}
+
+// 选择预设后自动填充
+function onPresetSelect() {
+  var type = document.getElementById('newTaskType').value;
+  var idx = document.getElementById('newTaskPreset').value;
+  if (idx === '') return;
+  
+  var options = presetOptions[type] || [];
+  var opt = options[parseInt(idx)];
+  if (opt) {
+    document.getElementById('newTaskText').value = opt.text;
+    document.getElementById('newTaskDuration').value = opt.duration;
+    document.getElementById('newTaskSubject').value = opt.subject;
+  }
 }
 
 // 智能分配新任务
@@ -3481,6 +3722,49 @@ function resetDaily() {
   }
   saveData();
   render();
+}
+
+// 刷新今日任务：根据当前课程进度重新生成任务（保留用户自定义任务）
+function refreshTodayTasks() {
+  if (!confirm('确定要重新生成今日任务吗？\n\n系统会根据当前学习进度重新安排任务，已完成的课程不会再出现。\n你自己添加的自定义任务会保留。')) return;
+  const dayKey = getDayKey(currentDayOffset);
+  const dayNum = getDayNumber(currentDayOffset);
+  
+  // 收集用户自定义任务（保留）
+  const customTasks = {};
+  const oldDayData = data.days[dayKey];
+  if (oldDayData && oldDayData.tasks) {
+    for (var s in oldDayData.tasks) {
+      oldDayData.tasks[s].forEach(function(t) {
+        if (t.custom) {
+          if (!customTasks[s]) customTasks[s] = [];
+          customTasks[s].push(t);
+        }
+      });
+    }
+  }
+  
+  // 重新生成任务
+  var newTasks = generateDayTasks(dayNum, new Set());
+  
+  // 把自定义任务加回去
+  for (var cs in customTasks) {
+    if (!newTasks[cs]) newTasks[cs] = [];
+    customTasks[cs].forEach(function(ct) {
+      newTasks[cs].push(ct);
+    });
+  }
+  
+  // 更新当天数据（保留错题记录）
+  if (!data.days[dayKey]) {
+    data.days[dayKey] = { tasks: newTasks, wrongs: [], date: dayKey };
+  } else {
+    data.days[dayKey].tasks = newTasks;
+  }
+  
+  saveData();
+  render();
+  alert('今日任务已刷新！已根据当前进度重新安排学习内容。');
 }
 
 function clearAllData() {
@@ -3952,6 +4236,27 @@ function getTaskWatchedDuration(task) {
   }
   var progress = getTaskProgress(task);
   return Math.round(task.duration * progress / 100);
+}
+
+// 获取任务当天的观看时长（只统计当天，不含之前的累计）
+function getTaskDailyWatchedDuration(task) {
+  // 视频/网课任务：用任务自身的 watchedMinutes（当天录入的时长）
+  if (task.type === 'video' || (task.isCourseTask && task.courseLessonId)) {
+    if (task.watchedMinutes !== undefined && task.watchedMinutes > 0) {
+      return task.watchedMinutes;
+    }
+    // 如果任务已完成但没有单独录入时长，按任务的 duration 计算（任务duration就是当天的量）
+    if (task.completed) {
+      return task.duration || 0;
+    }
+    return 0;
+  }
+  // 非视频任务：按完成进度 * 时长
+  if (task.completed) {
+    return task.duration || 0;
+  }
+  var progress = task.progress || 0;
+  return Math.round((task.duration || 0) * progress / 100);
 }
 
 // ==================== 课程进度追踪 ====================
